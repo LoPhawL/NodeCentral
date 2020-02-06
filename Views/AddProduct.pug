@@ -1,0 +1,12 @@
+extends CommonLayouts/MainLayout.pug 
+
+block title
+    title NodeProj | Add Book
+
+block MainReserve
+        .container.w-25
+            form(action="/Product", method="POST")
+                .form-group
+                    input.form-control.mb-1(type="text",name="bName",placeholder="Name")
+                    input.form-control.mb-1(type="number",name="bCost",placeholder="Cost")
+                    button.btn.btn-success.mr-auto.ml-auto(type="Submit") Submit

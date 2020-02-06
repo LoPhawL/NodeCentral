@@ -1,0 +1,19 @@
+extends CommonLayouts/MainLayout.pug 
+
+block title
+    title NodeProj | Home
+
+block MainReserve
+        .container.w-100
+            if books.length < 1
+                h4 No books are available.
+            else
+                .card-columns
+                    each book in books
+                        .card.border-info
+                            .card-body
+                                h4.card-title #{book.Name}
+                                h6.card-subtitle.text-muted &#8377; #{book.Cost}
+                                p.card-text Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus, exercitationem?
+                                button.btn.btn-outline-info Add to cart
+            
