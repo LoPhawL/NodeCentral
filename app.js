@@ -13,7 +13,7 @@ app.use(express.static("./Public"));
 
 //Home page with list of products
 app.use("/Home", (request, response, next) => {
-  response.render("Home", { books: app.get("books"), page: "Home"});
+ response.sendFile(path.join(__dirname, "./", "Views", "Home.html"));
 });
 
 //Adding routes in external modules
@@ -24,7 +24,7 @@ app.use(require("./Routes/shop"));
 app.use((request, response, next) => {
   if (request.originalUrl != "/")  //wrong route
   {
-    response.status(404).render("404", { page: "404" });
+    response.status(404).sendFile(path.join(dirname, "Views", "404.html"));
   }
   else //empty route
   { 
@@ -36,5 +36,5 @@ app.use((request, response, next) => {
 app.listen(3000);
 
 //Redundant code:
-// response.sendFile(path.join(__dirname, "./", "Views", "Home.html"));
-// response.status(404).sendFile(path.join(dirname, "Views", "404.html"));
+
+
