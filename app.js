@@ -25,7 +25,7 @@ app.use(require("./Routes/shop"));
 app.use((request, response, next) => {
   if (request.originalUrl != "/")  //wrong route
   {
-    response.status(404).sendFile(path.join(dirname, "Views", "404.html"));
+    response.status(404).sendFile(path.join(__dirname, "Views", "404.html"));
   }
   else //empty route
   { 
