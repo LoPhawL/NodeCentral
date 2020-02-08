@@ -15,7 +15,7 @@ app.use(express.static("./Public"));
 //Home page with list of products
 app.use("/Home", (request, response, next) => {
   const books = app.get('books');
-  response.render('Home',{books:books})
+  response.render('Home',{books:books, page:'Home'})
 });
 
 //Adding routes in external modules
@@ -26,7 +26,7 @@ app.use(require("./Routes/shop"));
 app.use((request, response, next) => {
   if (request.originalUrl != "/")  //wrong route
   {
-    response.status(404).render('404',{page:404})
+    response.status(404).render('404',{page:'404'})
   }
   else //empty route
   { 
