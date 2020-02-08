@@ -2,8 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const app = express();
-app.engine("pug", require("pug").__express);
-app.set("view engine", "pug");
+
+app.engine('handlebars',require('express-handlebars')())
+app.set("view engine", "handlebars");
 app.set("views", "./Views");
 app.set("books", []);
 module.exports = app;
@@ -13,7 +14,8 @@ app.use(express.static("./Public"));
 
 //Home page with list of products
 app.use("/Home", (request, response, next) => {
-  response.render("Home", { books: app.get("books"), page: "Home"});
+  const books = app.get("books");
+  response.render("Home", { books: books, page: "Home", hasBooks: books.length > 0});
 });
 
 //Adding routes in external modules
@@ -28,7 +30,6 @@ app.use((request, response, next) => {
   }
   else //empty route
   { 
-    response.setHeader("Auth", "//");
     response.redirect("/Home");
   }
 });
