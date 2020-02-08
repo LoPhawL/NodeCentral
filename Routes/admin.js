@@ -7,6 +7,3 @@ router.use("/AddProduct", (request, response, next) => {
 });
 
 module.exports = router;
-
-//Redundant code:
-
