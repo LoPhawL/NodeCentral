@@ -1,10 +1,7 @@
-const app = require("../app");
 const router = require("express").Router();
+const shopController = require('../Controllers/ShopController');
 
 //Home page with list of products
-router.use("/Home", (request, response, next) => {
-  const books = app.get('books');
-  response.render('Home',{books:books, page:'Home'})
-});
+router.use("/Home", (request, response, next) => {shopController.get_HomePage(response);});
 
 module.exports = router;

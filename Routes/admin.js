@@ -1,14 +1,12 @@
 const router = require("express").Router();
-const app = require("../app");
+const adminController = require('../Controllers/AdminController');
 
 router.use("/AddProduct", (request, response, next) => {
-  response.render('AddProduct', {page:'AddBook'});
+  adminController.get_AddProductsPage(response);
 });
 
 router.post("/Product", (request, response, next) => {
-  const data = request.body;
-  app.get("books").push( { Name:data.pName, Cost:data.pCost } );
-  response.redirect("/Home");
+  adminController.add_Books(request,response)
 });
 
 module.exports = router;
