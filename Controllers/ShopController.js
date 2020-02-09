@@ -1,7 +1,7 @@
 //Function names: Action(What)_Object(Which)
 const app = require("../app");
 
-let Get_HomePage = function(response)
+function Get_HomePage(response)
 {
     const books = app.get('books');
     response.render('Home',{books:books, page:'Home'});

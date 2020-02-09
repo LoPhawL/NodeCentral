@@ -1,5 +1,6 @@
 //Function names: Action(What)_Object(Which)
 const app = require("../app");
+const Book = require('../Models/Books')
 
 function Get_AddProductPage(response)
 {
@@ -9,7 +10,8 @@ function Get_AddProductPage(response)
 function Add_Books(request,response)
 {
     const data = request.body;
-    app.get("books").push( { Name:data.pName, Cost:data.pCost } );
+    app.get("books").push( new Book(data.pName, data.pCost, 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus, exercitationem?') );
+    // { Name:, Cost: }
     response.redirect("/Home");
 }
 

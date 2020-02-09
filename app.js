@@ -1,12 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
+const Book = require('./Models/Books')
 
 const app = express();
 // app.engine("pug", require("pug").__express);
 app.set("view engine", "ejs");
 app.set("views", "./Views");
-app.set("books", []);
+app.set("books", Book.GetAllBooks());
 module.exports = app;
 
 app.use(bodyParser.urlencoded({ extended: false }));

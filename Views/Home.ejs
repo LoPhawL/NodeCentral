@@ -8,10 +8,9 @@
                 <% for(const book of books){ %>
                     <div class="card border-info">
                         <div class="card-body">
-                            <h4 class="card-title"><%=book.Name%></h4>
-                            <h6 class="card-subtitle text-muted">&#8377; <%=book.Cost%> </h6>
-                            <p class="card-text"> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus,
-                                exercitationem?</p>
+                            <h4 class="card-title"><%=book.name%></h4>
+                            <h6 class="card-subtitle text-muted">&#8377; <%=book.cost%> </h6>
+                            <p class="card-text">  <%=book.description%> </p>
                             <button class="btn btn-outline-info">Add to cart</button>
                         </div>
                     </div>
