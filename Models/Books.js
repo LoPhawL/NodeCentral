@@ -1,4 +1,5 @@
-const books = [];
+const fs = require('fs');
+const storagePath = require('../Utils/Path')+'\\Data\\books.json';
 
 class Book
 {
@@ -11,12 +12,16 @@ class Book
 
     Save()
     {
-        books.push(this);
+        const data =  require('../app').get('books');//Book.GetAllBooks();
+        data.push(this);
+        fs.writeFileSync(storagePath, JSON.stringify(data));
     }
 
     static GetAllBooks()
     {
-        return books;
+        if(!fs.existsSync(storagePath))
+            {fs.writeFileSync(storagePath,JSON.stringify([]));}
+        return JSON.parse(fs.readFileSync(storagePath).toString());
     }
 }
 
