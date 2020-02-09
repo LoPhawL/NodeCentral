@@ -1,10 +1,10 @@
 const app = require("../app");
 const router = require("express").Router();
 
-router.post("/Product", (request, response, next) => {
-  const data = request.body;
-  app.get("books").push( { Name:data.pName, Cost:data.pCost } );
-  response.redirect("/Home");
+//Home page with list of products
+router.use("/Home", (request, response, next) => {
+  const books = app.get('books');
+  response.render('Home',{books:books, page:'Home'})
 });
 
 module.exports = router;

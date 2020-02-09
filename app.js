@@ -12,14 +12,8 @@ module.exports = app;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static("./Public"));
 
-//Home page with list of products
-app.use("/Home", (request, response, next) => {
-  const books = app.get('books');
-  response.render('Home',{books:books, page:'Home'})
-});
-
 //Adding routes in external modules
-app.use("/admin", require("./Routes/admin"));
+app.use("/Admin", require("./Routes/admin"));
 app.use(require("./Routes/shop"));
 
 //404 page and / (redirected to Home)
