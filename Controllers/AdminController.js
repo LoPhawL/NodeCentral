@@ -11,9 +11,9 @@ function Add_Books(request,response)
     const data = request.body;
     const book = new Book(data.pName, data.pCost, 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Possimus, exercitationem?');
     // app.get("books").push(book);
-    book.Save();
+    book.Save(()=>{ response.redirect("/Home");});
     // { Name:, Cost: }
-    response.redirect("/Home");
+   
 }
 
 module.exports = 
