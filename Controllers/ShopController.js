@@ -4,7 +4,7 @@ const app = require("../app");
 function Get_HomePage(response)
 {
     const books = app.get('books');
-    response.render('Home',{books:books, page:'Home'});
+    response.render('../Views/Home.ejs',{books:books, page:'Home'});
 }
 
 module.exports = {get_HomePage:Get_HomePage};
