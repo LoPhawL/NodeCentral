@@ -9,7 +9,7 @@ Book.GetAllBooks( data =>
     app.set('books',data);
   });
 app.set("view engine", "ejs");
-app.set("views", "./Views");
+// app.set("views", "./Views");
 module.exports = app;
 
 app.use(bodyParser.urlencoded({ extended: false }));

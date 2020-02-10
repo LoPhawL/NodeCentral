@@ -3,7 +3,7 @@ const Book = require('../Models/Books')
 
 function Get_AddProductPage(response)
 {
-    response.render('AddProduct', {page:'AddBook'});
+    response.render('../Views/AddProduct.ejs', {page:'AddBook'});
 }
 
 function Add_Books(request,response)
