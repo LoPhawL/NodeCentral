@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%= 'Mane | ' + module + ' | ' + page %></title>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
+        <div class="container">
+            <a class="navbar-brand" href="/">Mane</a>
+            <ul class="navbar-nav">
+                 <% if(module == 'enduser'){ %>
+                    <li class="nav-item">
+                        <% if (page == 'Products'){ %>
+                            <a class="nav-link active" href="Products">Products</a>
+                        <% } else{ %> 
+                            <a class="nav-link" href="Products">Products</a>
+                        <% } %>
+                    </li>
+
+                    <li class="nav-item">
+                        <% if (page == 'Orders'){ %>
+                            <a class="nav-link active" href="Orders"> Orders </a>
+                        <% } else{ %> 
+                            <a class="nav-link" href="Orders"> Orders </a>
+                        <% } %>
+                    </li>
+
+                    <li class="nav-item">
+                        <% if (page == 'Cart'){ %>
+                            <a class="nav-link active" href="Cart"> Cart </a>
+                        <% } else{ %> 
+                            <a class="nav-link" href="Cart"> Cart </a>
+                        <% } %>
+                    </li>
+
+                <% } else if (module == 'admin') {%>
+                    <li class="nav-item">
+                        <% if (page == 'Products'){ %>
+                            <a class="nav-link active" href="Products"> Products </a>
+                        <% } else{ %> 
+                            <a class="nav-link" href="Products"> Products </a>
+                        <% } %>
+                    </li>
+
+                    <li class="nav-item">
+                        <% if (page == 'AddProduct'){ %>
+                            <a class="nav-link active" href="AddProduct"> Add Product</a>
+                        <% } else{ %> 
+                            <a class="nav-link" href="AddProduct"> Add Product</a>
+                        <% } %>
+                    </li>
+                <% } %> 
+            </ul>
+        </div>
+    </nav>
