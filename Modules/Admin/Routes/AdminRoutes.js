@@ -6,15 +6,22 @@ const controllers =
         addProduct : require('../Controllers/AddProductController'),
 };
 
-router.use('/Products',(req,res,nexr)=>
+router.use('/Products',(req,res,next)=>
 {
     controllers.products.renderPage(res);
 });
 
-router.use('/AddProduct',(req,res,nexr)=>
+router.post('/AddProduct',(req,res,next)=>
+{
+  controllers.addProduct.saveProduct(req.body, ()=>{ res.redirect('Products');});
+});
+
+router.use('/AddProduct',(req,res,next)=>
 {
     controllers.addProduct.renderPage(res);
 });
+
+
 
 router.use((request, response, next) => {
     if (request.originalUrl != "/Admin" && request.originalUrl != "/Admin/")  //wrong route

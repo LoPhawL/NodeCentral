@@ -1,0 +1,26 @@
+<div class="container">
+    <% if(products.length > 0){  %>
+        <div class="card-columns">
+            <% for(const product of products){ %>
+                <div class="card border-info">
+                    <img class="card-img-top img-fluid image-responsive" src= "<%= product.url %>" alt="<%= product.name %>" style="max-height: 150px;">
+                    <div class="card-body">
+                        <h4 class="card-title"><%=product.name%></h4>
+                        <h6 class="card-subtitle text-muted">&#8377; <%=product.price%> </h6>
+                        <p class="card-text">  <%=product.description%> </p>
+                        <% if(module=='admin') { %> 
+                            <button class="btn btn-outline-warning">Edit</button>
+                            <button class="btn btn-outline-danger">Delete</button>
+                        <% } else{ %>
+                            <!-- <button class="btn btn-outline-success">Add to cart</button> -->
+                            <%- include('AddToCart.ejs',{product:product, productID:products.indexOf(product)}) %>
+                            <a href="/User/Products/<%= (products.indexOf(product)).toString()  %>" class="btn btn-outline-info">Details</a>
+                        <% } %>
+                    </div>
+                </div>
+            <%} %>
+        </div>
+    <%} else{ %>
+        <h2>No products are available.</h2>
+    <% } %>
+</div>

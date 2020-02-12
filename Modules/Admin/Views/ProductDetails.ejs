@@ -1,0 +1,13 @@
+<%- include('PageStart.ejs') %>
+
+<div class="container">
+    <img class="" src= "<%= product.url %>" alt="<%= product.name %>" style="max-height: 400px;">
+    <h3><%= product.name %></h3>
+    <h5 class="text-muted">&#8377;<%= product.price %></h5>
+    <h6><%= product.description %> Lorem ipsum dolor sit amet consectetur adipisicing elit. Id expedita aperiam quo possimus cum! Illo?</h6>
+    
+    <%- include('AddToCart.ejs') %>
+    
+</div>
+
+<%- include('PageEnd.ejs') %>

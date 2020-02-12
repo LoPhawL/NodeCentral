@@ -1,6 +1,6 @@
 function Render_ProductsPage(response)
 {
-    response.render('Product_a', {module:'admin',page:'Products'});
+    response.render('Product_a', {module:'admin',page:'Products', products: require('../../../app').get('products')});
 }
 
 module.exports = 

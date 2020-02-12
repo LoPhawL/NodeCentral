@@ -4,8 +4,14 @@ const controllers =
 {
     cart:require('../Controllers/CartController'),
     orders:require('../Controllers/OrdersController'),
-    products:require('../Controllers/ProductsController')
+    products:require('../Controllers/ProductsController'),
+    productDetails:require('../Controllers/ProductDetails')
 };
+
+router.use('/Products/:productId',(req,res,next)=>
+{
+  controllers.productDetails.renderPage(req.param('productId'),res);
+});
 
 router.use('/Products',(req,res,next)=>
 {
@@ -20,6 +26,12 @@ router.use('/Cart',(req,res,next)=>
 router.use('/Orders',(req,res,next)=>
 {
     controllers.orders.renderPage(res);
+});
+
+router.use('/AddToCart',(req,res,next)=>
+{
+    controllers.cart.addToCart(req.body.productID);
+    res.redirect('/User');
 });
 
 router.use((request, response, next) => {
