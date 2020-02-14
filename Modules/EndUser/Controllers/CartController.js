@@ -1,13 +1,13 @@
-const cart = require('../../../app').get('cart');
 
 function Render_CartPage(response)
 {
-    response.render('Cart',{module:'enduser', page:'Cart'});
+    var a = require('../../../app').get('cart').GetCart();
+    response.render('Cart',{module:'enduser', page:'Cart', cart:a});
 }
 
 function AddToCart(productID)
 {
-    cart.AddItem(productID);
+    require('../../../app').get('cart').AddItem(productID);
 }
 
 module.exports = 

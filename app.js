@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const Product = require('./Modules/Common/Models/Product.js');
-const Cart = require('./Modules/EndUser/Models/Cart').cart;
 
 const views = [
                 'Modules/Admin/Views','Modules/EndUser/Views',
@@ -10,10 +9,15 @@ const views = [
               ]
 
 const app = express();
-app.set('cart', new Cart());
+
 Product.GetAllProducts( data =>
   {
+    // console.log(768);
+    
     app.set('products',data);
+    const Cart = require('./Modules/EndUser/Models/Cart').cart;
+    // app.set('cart', new Cart());
+    app.set('cart', Cart);
   });
 
 module.exports = app;

@@ -9,8 +9,8 @@
                         <h6 class="card-subtitle text-muted">&#8377; <%=product.price%> </h6>
                         <p class="card-text">  <%=product.description%> </p>
                         <% if(module=='admin') { %> 
-                            <button class="btn btn-outline-warning">Edit</button>
-                            <button class="btn btn-outline-danger">Delete</button>
+                            <a href="/Admin/EditProduct?id=<%=products.indexOf(product)%>" class="btn btn-outline-warning">Edit</a>
+                            <a href="/Admin/DeleteProduct?id=<%=products.indexOf(product)%>" class="btn btn-outline-danger">Delete</a>
                         <% } else{ %>
                             <!-- <button class="btn btn-outline-success">Add to cart</button> -->
                             <%- include('AddToCart.ejs',{product:product, productID:products.indexOf(product)}) %>

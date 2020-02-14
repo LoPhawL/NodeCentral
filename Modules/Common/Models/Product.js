@@ -18,6 +18,20 @@ class Product
         fs.writeFile(storagePath, JSON.stringify(data), ()=>{savedCallBack();});
     }
 
+    Edit(editId,editedCallBack)
+    {
+        const data =  require('../../../app').get('products');
+        data[editId] = this;
+        fs.writeFile(storagePath, JSON.stringify(data), ()=>{editedCallBack();});
+    }
+
+    static Delete(id)
+    {
+        const data =  require('../../../app').get('products');
+        data.splice(id,1);
+        fs.writeFileSync(storagePath, JSON.stringify(data));
+    }
+
     static GetAllProducts(callBack)
     {
         fs.exists(storagePath, exists=>

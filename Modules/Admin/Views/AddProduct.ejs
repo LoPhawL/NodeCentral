@@ -1,13 +1,34 @@
 <%- include('PageStart.ejs') %>
     <div class="container col-xl-3 col-lg-5 col-md-6 col-sm-8">
-        <h4 class="text-center">Enter product details</h4>
-        <form action="AddProduct" method="POST">
-            <input type="text" class="form-control mb-1" placeholder="Name" name="pName">
-            <input type="text" class="form-control mb-1" placeholder="Image url" name="pImageUrl">
-            <input type="number" class="form-control mb-1" placeholder="Price" name="pPrice" step="0.01">
-            <textarea class="form-control mb-1" placeholder="Description" name="pDesc" rows="5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi cum accusantium, iure non delectus placeat.</textarea>
-            <button type="submit" class="btn btn-outline-success mb-1">Submit</button>
-        </form>
+        <% if(page == 'AddProduct'){ %>
+            <h4 class="text-center"> Enter product details to add</h4>
+            <form action="AddProduct" method="POST">
+                <input type="text" class="form-control mb-1" placeholder="Name" name="pName">
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">https://source.unsplash.com/400x400/?</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Image url" name="pImageUrl">
+                </div>
+                <input type="number" class="form-control mb-1" placeholder="Price" name="pPrice" step="0.01">
+                <textarea class="form-control mb-1" placeholder="Description" name="pDesc" rows="5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi cum accusantium, iure non delectus placeat.</textarea>
+                <button type="submit" class="btn btn-outline-success mb-1">Add Product</button>
+            </form>
+        <%} else{ %>
+            <h4 class="text-center"> Edit product details</h4>
+            <form action="EditProduct" method="POST">
+                <input type="text" class="form-control mb-1" placeholder="Name" name="pName" value="<%= product.name%>">
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">https://source.unsplash.com/400x400/?</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Image url" name="pImageUrl" value="<%= (product.url).split('?')[1] %>">
+                </div>
+                <input type="number" class="form-control mb-1" placeholder="Price" name="pPrice" step="0.01" value="<%=product.price %>">
+                <textarea class="form-control mb-1" placeholder="Description" name="pDesc" rows="5"><%=product.description %></textarea>
+                <input type="hidden" name="editID" value = "<%= productID %>"">
+                <button type="submit" class="btn btn-outline-success mb-1">Edit</button>
+            </form>
+        <% }%>
     </div>
-
 <%- include('PageEnd.ejs') %>
