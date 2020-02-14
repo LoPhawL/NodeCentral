@@ -12,12 +12,10 @@ const app = express();
 
 Product.GetAllProducts( data =>
   {
-    // console.log(768);
     
     app.set('products',data);
     const Cart = require('./Modules/EndUser/Models/Cart').cart;
-    // app.set('cart', new Cart());
-    app.set('cart', Cart);
+    app.set('cart', new Cart());
   });
 
 module.exports = app;

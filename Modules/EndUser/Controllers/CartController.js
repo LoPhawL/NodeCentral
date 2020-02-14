@@ -1,6 +1,7 @@
 
 function Render_CartPage(response)
 {
+    // console.log(require('../../../app').get('cart'));
     var a = require('../../../app').get('cart').GetCart();
     response.render('Cart',{module:'enduser', page:'Cart', cart:a});
 }

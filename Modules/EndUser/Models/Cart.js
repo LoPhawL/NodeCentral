@@ -11,7 +11,6 @@ class Cart
         this.length = 0;
         this.cartValue = 0;
         let items = [];
-        // this.items = [];
 
         this.AddItem = 
             function(productID)
@@ -53,15 +52,31 @@ class Cart
                 }
             };
 
-        this.ReadFromJSON(items);
-
         this.GetCart = 
-        function()
-        {
-            console.log(items);
-            return items;
-        };
+            function()
+            {
+                return items.splice([...items]);
+            };
+
+       this.ReadFromJSON = function()
+            {// if json exists
+                    // read and serialize json
+                    // set this.items to items from json
+                    // set this.cartValue to cartValue from json
+                if(fs.existsSync(this.cartsJsonFile))
+                {
+                    const cartData = JSON.parse(fs.readFileSync(this.cartsJsonFile).toString());
+                    items = cartData.items;
+                    this.cartValue = cartData.cartValue;
+                }
+                else
+                {
+                    fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
+                }
+            }
+        this.ReadFromJSON();
     }
+
     WriteToJSON(items)
     {
         fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
@@ -72,28 +87,10 @@ class Cart
                 // create and write items and cartValue to json
     }
 
-    ReadFromJSON(items)
-    {// if json exists
-            // read and serialize json
-            // set this.items to items from json
-            // set this.cartValue to cartValue from json
-        if(fs.existsSync(this.cartsJsonFile))
-        {
-            const cartData = JSON.parse(fs.readFileSync(this.cartsJsonFile).toString());
-            items = cartData.items;
-            console.log(items);
-            this.cartValue = cartData.cartValue;
-        }
-        else
-        {
-            fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
-        }
-        
-        
-    }
+    
 }
 
 module.exports = 
 {
-    cart:new Cart()
+    cart:Cart
 }
