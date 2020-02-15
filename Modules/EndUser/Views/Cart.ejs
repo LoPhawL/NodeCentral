@@ -1,6 +1,7 @@
 <%- include('PageStart.ejs') %>
 <div class="container d-flex flex-column mt-5">
-    <% for(cartItem of cart) { %>
+  
+    <%for(cartItem of cart) { %>
         <div class="media w-75 mb-3">
             <img style="max-height: 6rem;" class="mr-3 align-self-start" src="<%= cartItem.url %>">
             <div class="media-body d-flex justify-content-between">
@@ -26,6 +27,9 @@
         </div>
     <% } %>
 
+    <% if(cart.length < 1){%>
+        <h3>Cart is empty.</h3>
+    <% } else{%>
     <div class="d-flex flex-row-reverse mt-5 w-75">
         <div class="d-flex flex-column">
             <div><h6>Total</h6></div>
@@ -39,6 +43,7 @@
             <div> <a href="" class="btn btn-outline-danger">Clear cart</a></div>
         </div>
     </div>
+    <% }%>
 </div>
 
 <%- include('PageEnd.ejs') %>

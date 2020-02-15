@@ -107,7 +107,6 @@ class Cart
                     if (cartItem.productID == id)
                     {
                         items.splice(items.indexOf(cartItem),1);
-                        console.log(allProducts[id].price * cartItem.quantity);
                         this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
                         break;
                     }
@@ -126,8 +125,6 @@ class Cart
             // else
                 // create and write items and cartValue to json
     }
-
-    
 }
 
 module.exports = 

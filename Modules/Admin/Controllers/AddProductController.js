@@ -28,6 +28,14 @@ function EditProduct(requestBody,editedCallBack)
 function DeleteProduct(id)
 {
     //Dont delete if in cart
+    const cartItems = require('../../../app').get('cart').GetCart()[0];
+    for (const cartItem of cartItems)
+    {
+        if (cartItem.productID == id)
+        {
+            return;
+        }
+    }
     Product.Delete(id);
 }
 
