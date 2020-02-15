@@ -12,8 +12,7 @@ class Cart
         this.cartValue = 0;
         let items = [];
 
-        this.AddItem = 
-            function(productID)
+        this.AddItem = function(productID)
             {
                 if(items.length < 1) //cart is empty
                 {
@@ -42,8 +41,7 @@ class Cart
                 this.WriteToJSON(items); // updating or writing the changes to json.
             };
 
-        this.RemoveItem = 
-            function(productID)
+        this.RemoveItem = function(productID)
             {
                 if(productID in items)
                 {
@@ -52,10 +50,9 @@ class Cart
                 }
             };
 
-        this.GetCart = 
-            function()
+        this.GetCart = function()
             {
-                return items.splice([...items]);
+                return [[...items], this.cartValue];
             };
 
        this.ReadFromJSON = function()
@@ -73,6 +70,49 @@ class Cart
                 {
                     fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
                 }
+            };
+
+            this.ReduceQuantity = function(id)
+            {
+                for(let cartItem of items)
+                {
+                    if (cartItem.productID == id && cartItem.quantity > 1)
+                    {
+                        cartItem.quantity -= 1;
+                        this.cartValue -= +allProducts[id].price;
+                        break;
+                    }
+                }
+                this.WriteToJSON(items);
+            };
+    
+            this.IncreaseQuantity = function(id)
+            {
+                for(let cartItem of items)
+                {
+                    if (cartItem.productID == id)
+                    {
+                        cartItem.quantity += 1;
+                        this.cartValue += +allProducts[id].price;
+                        break;
+                    }
+                }
+                this.WriteToJSON(items);
+            }
+    
+            this.Delete = function(id)
+            {
+                for(let cartItem of items)
+                {
+                    if (cartItem.productID == id)
+                    {
+                        items.splice(items.indexOf(cartItem),1);
+                        console.log(allProducts[id].price * cartItem.quantity);
+                        this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
+                        break;
+                    }
+                }
+                this.WriteToJSON(items);
             }
         this.ReadFromJSON();
     }
