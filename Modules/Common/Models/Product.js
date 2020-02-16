@@ -42,23 +42,30 @@ class Product
 
     static GetAllProducts(callBack)
     {
-        fs.exists(storagePath, exists=>
+        db.then(pool => 
             {
-                if (!exists)
+                pool.request().query('Select * from Products',(err,res)=>
                 {
-                    fs.writeFile(storagePath,JSON.stringify([]), () => {callBack([])});
-                }
-                else
-                {
-                    fs.readFile(storagePath,(err,data)=>
-                    {
-                        if(!err)
-                        {
-                            callBack(JSON.parse(data));
-                        }
-                    });
-                }
-            });
+                    callBack(res.recordset);
+                })
+            }).catch(err=>{console.log('error');});
+        // fs.exists(storagePath, exists=>
+        //     {
+        //         if (!exists)
+        //         {
+        //             fs.writeFile(storagePath,JSON.stringify([]), () => {callBack([])});
+        //         }
+        //         else
+        //         {
+        //             fs.readFile(storagePath,(err,data)=>
+        //             {
+        //                 if(!err)
+        //                 {
+        //                     callBack(JSON.parse(data));
+        //                 }
+        //             });
+        //         }
+        //     });
     }
 
     static GetProduct(id)
