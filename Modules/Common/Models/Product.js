@@ -1,10 +1,12 @@
 const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');
 const fs = require('fs');
+const db = require('../../../Utils/Database');
 
 class Product
 {
     constructor(name, url, price, description)
     {
+        
         this.name = name;
         this.url = 'https://source.unsplash.com/600x600/?'+url;
         this.price = price;
@@ -13,8 +15,14 @@ class Product
 
     Save(savedCallBack)
     {
+       
         const data =  require('../../../app').get('products');
         data.push(this);
+        db.then(pool => 
+            {
+                pool.request().query(`Insert into Products Values ('${this.name}','${this.url}','${this.description}',${this.price})`)
+                .then(res => {console.log(res);
+        })});
         fs.writeFile(storagePath, JSON.stringify(data), ()=>{savedCallBack();});
     }
 
