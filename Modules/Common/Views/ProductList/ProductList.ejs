@@ -9,12 +9,12 @@
                         <h6 class="card-subtitle text-muted">&#8377; <%=product.price%> </h6>
                         <p class="card-text">  <%=product.description%> </p>
                         <% if(module=='admin') { %> 
-                            <a href="/Admin/EditProduct?id=<%=products.indexOf(product)%>" class="btn btn-outline-warning">Edit</a>
-                            <a href="/Admin/DeleteProduct?id=<%=products.indexOf(product)%>" class="btn btn-outline-danger">Delete</a>
+                            <a href="/Admin/EditProduct?id=<%=product.Id%>" class="btn btn-outline-warning">Edit</a>
+                            <a href="/Admin/DeleteProduct?id=<%=product.Id%>" class="btn btn-outline-danger">Delete</a>
                         <% } else{ %>
                             <!-- <button class="btn btn-outline-success">Add to cart</button> -->
-                            <%- include('AddToCart.ejs',{product:product, productID:products.indexOf(product)}) %>
-                            <a href="/User/Products/<%= (products.indexOf(product)).toString()  %>" class="btn btn-outline-info">Details</a>
+                            <%- include('AddToCart.ejs',{product:product, productID:product.Id}) %>
+                            <a href="/User/Products/<%= (product.Id).toString()  %>" class="btn btn-outline-info">Details</a>
                         <% } %>
                     </div>
                 </div>

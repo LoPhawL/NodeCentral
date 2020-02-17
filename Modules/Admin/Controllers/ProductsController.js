@@ -1,6 +1,15 @@
 function Render_ProductsPage(response)
 {
-    response.render('Product_a', {module:'admin',page:'Products', products: require('../../../app').get('products')});
+    const prod = require('../../Common/Models/Product');
+    prod.GetAllProducts(data => 
+        {
+            response.render('Product_a', 
+            {
+                module:'admin',
+                page:'Products', 
+                products: JSON.parse(JSON.stringify(data))//require('../../../app').get('products')
+            });
+        });
 }
 
 module.exports = 

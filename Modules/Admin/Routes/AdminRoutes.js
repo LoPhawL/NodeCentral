@@ -33,8 +33,7 @@ router.use('/EditProduct',(req,res,next)=>
 
 router.use('/DeleteProduct',(req,res,next)=>
 {
-  controllers.addProduct.deleteProduct(+req.query.id);
-  res.redirect('Products');
+  controllers.addProduct.deleteProduct(+req.query.id , ()=>{res.redirect('Products');});
 });
 
 router.use((request, response, next) => {

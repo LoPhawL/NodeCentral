@@ -6,38 +6,46 @@ class Product
 {
     constructor(name, url, price, description)
     {
-        
+        this.id = null;
         this.name = name;
         this.url = 'https://source.unsplash.com/600x600/?'+url;
         this.price = price;
         this.description = description;
     }
 
+    SetId(id)
+    {
+        this.id = id;
+    }
+
     Save(savedCallBack)
     {
-       
-        const data =  require('../../../app').get('products');
-        data.push(this);
         db.then(pool => 
             {
                 pool.request().query(`Insert into Products Values ('${this.name}','${this.url}','${this.description}',${this.price})`)
-                .then(res => {console.log(res);
+                .then(res => {savedCallBack();
         })});
-        fs.writeFile(storagePath, JSON.stringify(data), ()=>{savedCallBack();});
     }
 
-    Edit(editId,editedCallBack)
+    Edit(editedCallBack)
     {
-        const data =  require('../../../app').get('products');
-        data[editId] = this;
-        fs.writeFile(storagePath, JSON.stringify(data), ()=>{editedCallBack();});
+        const query = `exec Edit_Product @Id = ${this.id.toString()}, @name = '${this.name}', @url = '${this.url}', @description = '${this.description}', @price = ${this.price}`;
+        db.then(pool=>
+            {
+                pool.request().query(query, (err,result) => {editedCallBack();});
+            });
     }
 
-    static Delete(id)
+    static Delete(id,DelectedCallBack)
     {
-        const data =  require('../../../app').get('products');
-        data.splice(id,1);
-        fs.writeFileSync(storagePath, JSON.stringify(data));
+        db.then(pool =>
+            {
+                pool.request().query('exec Delete_Product @Id = '+id.toString(), (err,res)=>
+                {
+                    DelectedCallBack();
+                });
+                // .catch()
+            } );
     }
 
     static GetAllProducts(callBack)
@@ -48,29 +56,14 @@ class Product
                 {
                     callBack(res.recordset);
                 })
-            }).catch(err=>{console.log('error');});
-        // fs.exists(storagePath, exists=>
-        //     {
-        //         if (!exists)
-        //         {
-        //             fs.writeFile(storagePath,JSON.stringify([]), () => {callBack([])});
-        //         }
-        //         else
-        //         {
-        //             fs.readFile(storagePath,(err,data)=>
-        //             {
-        //                 if(!err)
-        //                 {
-        //                     callBack(JSON.parse(data));
-        //                 }
-        //             });
-        //         }
-        //     });
+            }).catch(err=>{});
     }
 
-    static GetProduct(id)
+    static GetProduct(id, callBack)
     {
-        //return require('../../../app'.get('products'))[id];
+        db.then(pool =>{pool.request().query('Select * from Products where id = '+id.toString(),
+        (err, data)=>{callBack(err,data);}
+        )});
     }
 }
 

@@ -7,9 +7,11 @@ function Render_ProductsPage(response)
 
 function Render_EditProduct(response, id)
 {
-    const product = require('../../../app').get('products')[id];
-    response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
-    return;
+    // const product = require('../../../app').get('products')[id];
+    Product.GetProduct(id, (err,data) => 
+        {
+            response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:JSON.parse(JSON.stringify(data.recordset[0])), productID:id});
+        });
 }
 
 function SaveProduct(requestBody, ProductSavedCallback)
@@ -21,22 +23,13 @@ function SaveProduct(requestBody, ProductSavedCallback)
 function EditProduct(requestBody,editedCallBack)
 {
     const prod = new Product(requestBody.pName, requestBody.pImageUrl, requestBody.pPrice, requestBody.pDesc);
-    const editId = requestBody.editID;
-    prod.Edit(editId,editedCallBack);
+    prod.SetId(requestBody.editID)
+    prod.Edit(editedCallBack);
 }
 
-function DeleteProduct(id)
+function DeleteProduct(id, callBack)
 {
-    //Dont delete if in cart
-    const cartItems = require('../../../app').get('cart').GetCart()[0];
-    for (const cartItem of cartItems)
-    {
-        if (cartItem.productID == id)
-        {
-            return;
-        }
-    }
-    Product.Delete(id);
+    Product.Delete(id, callBack);
 }
 
 module.exports = 

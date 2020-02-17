@@ -1,6 +1,15 @@
 function Render_ProductsPage(response)
 {
-    response.render('Products_u',{module:'enduser', page:'Products', products: require('../../../app').get('products')});
+    const prod = require('../../Common/Models/Product');
+    prod.GetAllProducts(data => 
+        {
+            response.render('Product_a', 
+            {
+                module:'enduser',
+                page:'Products', 
+                products: JSON.parse(JSON.stringify(data))
+            });
+        });
 }
 
 module.exports = 

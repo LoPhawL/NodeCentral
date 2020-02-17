@@ -12,7 +12,6 @@ const app = express();
 
 Product.GetAllProducts( data =>
   {
-    
     app.set('products',data);
     const Cart = require('./Modules/EndUser/Models/Cart').cart;
     app.set('cart', new Cart());
