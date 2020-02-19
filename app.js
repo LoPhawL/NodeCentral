@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const Product = require('./Modules/Common/Models/Product.js');
 
 const views = [
                 'Modules/Admin/Views','Modules/EndUser/Views',
@@ -41,4 +40,6 @@ app.use((request, response, next) => {
     }
   });
   
-  app.listen(2000);
+const db = require('./Utils/Database');
+db.startClient(()=>{app.listen(2000);});
+  

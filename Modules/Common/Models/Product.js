@@ -1,5 +1,5 @@
-const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');
-const fs = require('fs');
+const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');//not needed after mongo
+const fs = require('fs');//not needed after mongo
 
 class Product
 {
@@ -34,23 +34,7 @@ class Product
 
     static GetAllProducts(callBack)
     {
-        fs.exists(storagePath, exists=>
-            {
-                if (!exists)
-                {
-                    fs.writeFile(storagePath,JSON.stringify([]), () => {callBack([])});
-                }
-                else
-                {
-                    fs.readFile(storagePath,(err,data)=>
-                    {
-                        if(!err)
-                        {
-                            callBack(JSON.parse(data));
-                        }
-                    });
-                }
-            });
+       
     }
 
     static GetProduct(id)
