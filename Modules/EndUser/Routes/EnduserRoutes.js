@@ -8,15 +8,15 @@ const controllers =
     productDetails:require('../Controllers/ProductDetails')
 };
 
-// router.use('/Products/:productId',(req,res,next)=>
-// {
-//   controllers.productDetails.renderPage(req.param('productId'),res);
-// });
+router.use('/Products/:productId',(req,res,next)=>
+{
+  controllers.productDetails.renderPage(req.param('productId'),res);
+});
 
-// router.use('/Products',(req,res,next)=>
-// {
-//     controllers.products.renderPage(res);
-// });
+router.use('/Products',(req,res,next)=>
+{
+    controllers.products.renderPage(res);
+});
 
 // router.use('/Cart/:productId/:action',(req,res,next)=>
 // {

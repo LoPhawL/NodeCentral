@@ -1,6 +1,5 @@
-const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');//not needed after mongo
-const fs = require('fs');//not needed after mongo
-
+const db = require('../../../Utils/Database');//();
+const mongoDb = require('mongodb');
 
 class Product
 {
@@ -14,7 +13,7 @@ class Product
 
     Save(savedCallBack)
     {
-        db.collection('Products').insertOne(this).then(result => 
+        db.getDbClient.collection('Products').insertOne(this).then(result => 
             {
                 savedCallBack();
             }).catch
@@ -25,30 +24,28 @@ class Product
 
     Edit(editId,editedCallBack)
     {
-        const data =  require('../../../app').get('products');
-        data[editId] = this;
-        fs.writeFile(storagePath, JSON.stringify(data), ()=>{editedCallBack();});
+        db.getDbClient.collection('Products').updateOne({_id: new mongoDb.ObjectID(editId)},{$set:this})
+        .then(result=>{editedCallBack();}).catch(err=>{console.log(err);});
     }
 
     static Delete(id)
     {
-        const data =  require('../../../app').get('products');
-        data.splice(id,1);
-        fs.writeFileSync(storagePath, JSON.stringify(data));
+        return db.getDbClient.collection('Products').deleteOne({_id: new mongoDb.ObjectID(id)});
     }
 
     static GetAllProducts(callBack)
     {
-        require('../../../Utils/Database').getDbClient().db().collection('Products').then(result=>
-        {
-            console.log(result);
-            callBack();
-        });
+        db.getDbClient.collection('Products').find().toArray().then(
+            result=>
+            {
+                callBack(result);
+            }).catch(error =>{console.log(error);});
+        // .then(
     }
 
     static GetProduct(id)
     {
-        //return require('../../../app'.get('products'))[id];
+       return db.getDbClient.collection('Products').findOne({_id: new mongoDb.ObjectID(id)});
     }
 }
 

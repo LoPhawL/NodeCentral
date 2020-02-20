@@ -7,8 +7,13 @@ function Render_ProductsPage(response)
 
 function Render_EditProduct(response, id)
 {
-    const product = require('../../../app').get('products')[id];
-    response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
+    Product.GetProduct(id).then
+    (
+        product=>{
+            response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
+        }
+    ).catch(err=>{console.log(err);});
+    
     return;
 }
 
@@ -25,18 +30,13 @@ function EditProduct(requestBody,editedCallBack)
     prod.Edit(editId,editedCallBack);
 }
 
-function DeleteProduct(id)
+function DeleteProduct(id,res)
 {
     //Dont delete if in cart
-    const cartItems = require('../../../app').get('cart').GetCart()[0];
-    for (const cartItem of cartItems)
-    {
-        if (cartItem.productID == id)
+    Product.Delete(id).then(result => 
         {
-            return;
-        }
-    }
-    Product.Delete(id);
+            res.redirect('Products');
+        });
 }
 
 module.exports = 

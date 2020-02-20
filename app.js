@@ -9,21 +9,13 @@ const views = [
 
 const app = express();
 
-// Product.GetAllProducts( data =>
-//   {
-    
-//     app.set('products',data);
-//     const Cart = require('./Modules/EndUser/Models/Cart').cart;
-//     app.set('cart', new Cart());
-//   });
-
 module.exports = app;
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('./Public'));
 
 app.use('/Admin',require('./Modules/Admin/Routes/AdminRoutes.js')); // Admin routes
-// app.use('/User',require('./Modules/EndUser/Routes/EnduserRoutes.js')); // EndUser routes
+app.use('/User',require('./Modules/EndUser/Routes/EnduserRoutes.js')); // EndUser routes
 
 app.set("view engine", "ejs");
 app.set('views', views);
@@ -44,5 +36,6 @@ const db = require('./Utils/Database');
 db.startClient(()=>
 {
   app.listen(2000); 
+  console.log('Started');
 });
   
