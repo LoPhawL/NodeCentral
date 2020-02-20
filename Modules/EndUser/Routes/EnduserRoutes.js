@@ -35,11 +35,10 @@ router.use('/Products',(req,res,next)=>
 //     controllers.orders.renderPage(res);
 // });
 
-// router.use('/AddToCart',(req,res,next)=>
-// {
-//     controllers.cart.addToCart(req.body.productID);
-//     res.redirect('/User');
-// });
+router.use('/AddToCart',(req,res,next)=>
+{
+    controllers.cart.addToCart(req.body.productID, res);
+});
 
 router.use((request, response, next) => {
     if (request.originalUrl != "/User" && request.originalUrl != "/User/")  //wrong route

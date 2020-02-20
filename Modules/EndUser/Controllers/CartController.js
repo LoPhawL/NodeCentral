@@ -1,11 +1,10 @@
+const Cart = require('../Models/Cart').cart;
+const cart =  new Cart(1);
+const CartItem = require('../Models/CartItem').cartItem;
+
 function Render_CartPage(response)
 {
     // console.log(require('../../../app').get('cart'));
-    const app = require('../../../app');
-    const cartDetails = app.get('cart').GetCart();
-    const cartItems = cartDetails[0];
-    const products = app.get('products');
-    const cartItemsForView = [];
     for(const cartItem of cartItems)
     {
         let product = products[cartItem.productID];
@@ -23,11 +22,12 @@ function Render_CartPage(response)
 
 function AddToCart(productID)
 {
-    require('../../../app').get('cart').AddItem(productID);
+    cart.AddItem(new CartItem(productID,1))
+    .then(result => {console.log(result);res.redirect('/User');}).catch(err => {console.log(err);res.redirect('/User');});
 }
 
 function ModifyCart(productID, action)
-{
+{    
     const cart = require('../../../app').get('cart');
     if(action == 'reduce')
     {

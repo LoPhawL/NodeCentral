@@ -3,131 +3,100 @@ const path = require('path');
 const fs = require('fs');
 const allProducts = require('../../../app').get('products');
 
-class Cart
+class CartHelper
 {
-    constructor()
-    {
-        this.cartsJsonFile = path.dirname(process.mainModule.filename)+'/Data/Cart.json';
-        this.length = 0;
-        this.cartValue = 0;
-        let items = [];
-
-        this.AddItem = function(productID)
-            {
-                if(items.length < 1) //cart is empty
-                {
-                    items.push(new CartItem(+productID,1));
-                    this.cartValue += (+allProducts[productID].price);
-                    this.length += 1;
-                }
-                else // cart is not empty
-                {
-                    for (let cartItem of items) //checking if the item added is already present in cart
-                    {
-                        if(cartItem.productID == productID) // item is already present in cart, hence increasing the quantity of the same item.
-                        {
-                            cartItem.quantity += 1;
-                            this.cartValue += (+allProducts[productID].price);
-                            this.WriteToJSON(items);
-                            return;
-                        }
-                    }
-                    // item is not found in cart, hence proceeding to add new cart item.
-                    items.push(new CartItem(+productID,1));
-                    this.cartValue += (+allProducts[productID].price);
-                    this.length += 1;
-                }
-
-                this.WriteToJSON(items); // updating or writing the changes to json.
-            };
-
-        this.RemoveItem = function(productID)
-            {
-                if(productID in items)
-                {
-                    items.splice(items.indexOf(productID),1);
-                    this.length -= 1;
-                }
-            };
-
-        this.GetCart = function()
-            {
-                return [[...items], this.cartValue];
-            };
-
-       this.ReadFromJSON = function()
-            {// if json exists
-                    // read and serialize json
-                    // set this.items to items from json
-                    // set this.cartValue to cartValue from json
-                if(fs.existsSync(this.cartsJsonFile))
-                {
-                    const cartData = JSON.parse(fs.readFileSync(this.cartsJsonFile).toString());
-                    items = cartData.items;
-                    this.cartValue = cartData.cartValue;
-                }
-                else
-                {
-                    fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
-                }
-            };
-
-            this.ReduceQuantity = function(id)
-            {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id && cartItem.quantity > 1)
-                    {
-                        cartItem.quantity -= 1;
-                        this.cartValue -= +allProducts[id].price;
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            };
     
-            this.IncreaseQuantity = function(id)
-            {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id)
-                    {
-                        cartItem.quantity += 1;
-                        this.cartValue += +allProducts[id].price;
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            }
     
-            this.Delete = function(id)
-            {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id)
-                    {
-                        items.splice(items.indexOf(cartItem),1);
-                        this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            }
-        this.ReadFromJSON();
-    }
-
-    WriteToJSON(items)
+    
+    constructor(userId)
     {
-        fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
-        // Check if json exists
-            // if exists
-                // rewrite items and cartValue to json
-            // else
-                // create and write items and cartValue to json
+        this._id = null;
+        this.userId = 1;
+        this.products = {};
+
+        this.db = require('../../../Utils/Database');
+        this.mongoDb = require('mongodb');
     }
+   
+    AddItem (cartItem)
+        {
+            const transfrmedCartItem = JSON.parse(JSON.stringify(`${cartItem.productID}:${cartItem.quantity}`) );
+            console.log(transfrmedCartItem);
+            
+            if (true)//cart is not present for the user. i.e, no document with userId exists in cart collection.
+            {
+                //Create cart with the userid and added product.
+                return this.db.getDbClient.collection('Cart').insertOne({userId:this.userId,products:{transfrmedCartItem}});
+            }
+
+            if (true)//cart is present for the user. Product added is not present in the cart.
+            {
+                //add product to the cart, i.e products nested document.
+            }
+
+            if(true)//cart is present for the user. Product added is already present in the cart.
+            {
+                //increment the quantity of the productId in the nested product document.
+            }
+        }
+
+    RemoveItem ()
+        {
+            // if(productID in items)
+            // {
+            //     items.splice(items.indexOf(productID),1);
+            //    length -= 1;
+            // }
+        }
+
+    static GetCart ()
+        {
+            // return [[...items], this.cartValue];
+        }
+
+    Reduce()
+        {
+            // for(let cartItem of items)
+            // {
+            //     if (cartItem.productID == id && cartItem.quantity > 1)
+            //    /         cartItem.quantity -= e1;
+            //         this.cartValue -= +allProducts[id].price;
+            //         break;
+            //     }
+            // }
+            // this.WriteToJSON(items);
+        }
+
+    IncreaseQuantity ()
+        {
+            // for(let cartItem of items)
+            // {
+            //     if (cartItem.productID == id)
+            //     {
+            //         cartItem.quantity += 1;
+            //         this.cartValue += +allProducts[id].price;
+            //         break;
+            //     }
+            // }
+            // this.WriteToJSON(items);
+        }
+
+    Delete ()
+        {
+            // for(let cartItem of items)
+            // {
+            //     if (cartItem.productID == id)
+            //     {
+            //         items.splice(items.indexOf(cartItem),1);
+            //         this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
+            //         break;
+            //     }
+            // }
+            // this.WriteToJSON(items);
+        }
 }
 
 module.exports = 
 {
-    cart:Cart
+    cart:CartHelper
 }
