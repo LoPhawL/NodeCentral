@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('./Public'));
 
 app.use('/Admin',require('./Modules/Admin/Routes/AdminRoutes.js')); // Admin routes
-app.use('/User',require('./Modules/EndUser/Routes/EnduserRoutes.js')); // EndUser routes
+// app.use('/User',require('./Modules/EndUser/Routes/EnduserRoutes.js')); // EndUser routes
 
 app.set("view engine", "ejs");
 app.set('views', views);
@@ -41,5 +41,8 @@ app.use((request, response, next) => {
   });
   
 const db = require('./Utils/Database');
-db.startClient(()=>{app.listen(2000);});
+db.startClient(()=>
+{
+  app.listen(2000); 
+});
   

@@ -2,14 +2,14 @@ const router = require('express').Router();
 
 const controllers = 
 {
-        products : require('../Controllers/ProductsController'),
+        // products : require('../Controllers/ProductsController'),
         addProduct : require('../Controllers/AddProductController'),
 };
 
-router.use('/Products',(req,res,next)=>
-{
-  controllers.products.renderPage(res);
-});
+// router.use('/Products',(req,res,next)=>
+// {
+//   controllers.products.renderPage(res);
+// });
 
 router.post('/AddProduct',(req,res,next)=>
 {
@@ -21,21 +21,21 @@ router.use('/AddProduct',(req,res,next)=>
     controllers.addProduct.renderPage(res);
 });
 
-router.post('/EditProduct',(req,res,next)=>
-{
-  controllers.addProduct.editProduct(req.body, ()=>{ res.redirect('/');});
-});
+// router.post('/EditProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.editProduct(req.body, ()=>{ res.redirect('/');});
+// });
 
-router.use('/EditProduct',(req,res,next)=>
-{
-  controllers.addProduct.render_editProduct(res, +req.query.id);
-});
+// router.use('/EditProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.render_editProduct(res, +req.query.id);
+// });
 
-router.use('/DeleteProduct',(req,res,next)=>
-{
-  controllers.addProduct.deleteProduct(+req.query.id);
-  res.redirect('Products');
-});
+// router.use('/DeleteProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.deleteProduct(+req.query.id);
+//   res.redirect('Products');
+// });
 
 router.use((request, response, next) => {
     if (request.originalUrl != "/Admin" && request.originalUrl != "/Admin/")  //wrong route

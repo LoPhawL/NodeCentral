@@ -1,6 +1,7 @@
 const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');//not needed after mongo
 const fs = require('fs');//not needed after mongo
 
+
 class Product
 {
     constructor(name, url, price, description)
@@ -13,9 +14,13 @@ class Product
 
     Save(savedCallBack)
     {
-        const data =  require('../../../app').get('products');
-        data.push(this);
-        fs.writeFile(storagePath, JSON.stringify(data), ()=>{savedCallBack();});
+        db.collection('Products').insertOne(this).then(result => 
+            {
+                savedCallBack();
+            }).catch
+            (
+                error => {savedCallBack();}
+            );
     }
 
     Edit(editId,editedCallBack)
@@ -34,7 +39,11 @@ class Product
 
     static GetAllProducts(callBack)
     {
-       
+        require('../../../Utils/Database').getDbClient().db().collection('Products').then(result=>
+        {
+            console.log(result);
+            callBack();
+        });
     }
 
     static GetProduct(id)
