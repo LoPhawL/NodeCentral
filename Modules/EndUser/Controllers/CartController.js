@@ -20,10 +20,10 @@ function Render_CartPage(response)
     response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartDetails[1] });
 }
 
-function AddToCart(productID)
+function AddToCart(productID,res)
 {
-    cart.AddItem(new CartItem(productID,1))
-    .then(result => {console.log(result);res.redirect('/User');}).catch(err => {console.log(err);res.redirect('/User');});
+    cart.AddItem(new CartItem(productID,1), resultOrError => res.redirect('/User'));
+    // .then(result => {console.log(result);res.redirect('/User');}).catch(err => {console.log(err);});
 }
 
 function ModifyCart(productID, action)

@@ -1,13 +1,9 @@
 let CartItem = require('./CartItem').cartItem;
-const path = require('path');
-const fs = require('fs');
-const allProducts = require('../../../app').get('products');
+const db = require('../../../Utils/Database');
+const mongoDb = require('mongodb');
 
 class CartHelper
 {
-    
-    
-    
     constructor(userId)
     {
         this._id = null;
@@ -18,26 +14,45 @@ class CartHelper
         this.mongoDb = require('mongodb');
     }
    
-    AddItem (cartItem)
+    AddItem (cartItem, callBack)
         {
-            const transfrmedCartItem = JSON.parse(JSON.stringify(`${cartItem.productID}:${cartItem.quantity}`) );
-            console.log(transfrmedCartItem);
-            
-            if (true)//cart is not present for the user. i.e, no document with userId exists in cart collection.
-            {
-                //Create cart with the userid and added product.
-                return this.db.getDbClient.collection('Cart').insertOne({userId:this.userId,products:{transfrmedCartItem}});
-            }
-
-            if (true)//cart is present for the user. Product added is not present in the cart.
-            {
-                //add product to the cart, i.e products nested document.
-            }
-
-            if(true)//cart is present for the user. Product added is already present in the cart.
-            {
-                //increment the quantity of the productId in the nested product document.
-            }
+            db.getDbClient.collection('Cart').findOne({userId:this.userId})
+            .then(result => 
+                {
+                    if(result) // cart is present for the user.
+                    {
+                        for (const item of result.products)
+                        {
+                            if(item.prodId == cartItem.productID)//cart is present for the user. Product added is already present in the cart.
+                            {   
+                                item.quantity += 1;//increment the quantity of the productId in the product document.
+                                db.getDbClient.collection('Cart')
+                                .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                                .then
+                                (
+                                    result =>{callBack();}//console.log('Item is already present in the cart. Increased quantity.');
+                                ).catch(err=>{console.log('Error while increasing quantity');callBack();});
+                                return;
+                            }
+                        }
+                        //cart is present for the user. Product added is not present in the cart.
+                        result.products.push({prodId:cartItem.productID,quantity:cartItem.quantity});
+                        db.getDbClient.collection('Cart')
+                                .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                                .then
+                                (
+                                    result =>{callBack();}//console.log('Cart exists for the user, but item is not present. Added item.');
+                                ).catch(err=>{console.log('Error while adding item to existing cart');callBack();});
+                    }
+                    else//cart is not present for the user. i.e, no document with userId exists in cart collection.
+                    {
+                         //Create cart with the userid and added product.
+                        this.db.getDbClient.collection('Cart').insertOne({userId:this.userId,products:[{prodId:cartItem.productID,quantity:cartItem.quantity}]})
+                        .then(result=>{callBack();}).catch(err=>{callBack();});//console.log('Cart is not present. Created cart with the added item');
+                    }
+                })
+            .catch(err =>{console.log('Error while fetching cart of the user.');});
+            return;
         }
 
     RemoveItem ()
