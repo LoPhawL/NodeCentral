@@ -54,61 +54,76 @@ class CartHelper
             .catch(err =>{console.log('Error while fetching cart of the user.');});
             return;
         }
-
-    RemoveItem ()
+    GetCart()
         {
-            // if(productID in items)
-            // {
-            //     items.splice(items.indexOf(productID),1);
-            //    length -= 1;
-            // }
+            return db.getDbClient.collection('Cart').findOne({userId:this.userId});
         }
 
-    static GetCart ()
+    ReduceQuantity(productID, callBack)
         {
-            // return [[...items], this.cartValue];
+            this.GetCart()
+            .then(result => 
+            {
+                for(let cartItem of result.products)
+                {
+                    if (cartItem.prodId == productID)
+                    {
+                        if(cartItem.quantity == 1){callBack();return;}
+                        cartItem.quantity -= 1;
+                        break;
+                    }
+                }
+                db.getDbClient.collection('Cart')
+                            .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                            .then
+                            (
+                                result =>{callBack();}
+                            ).catch(err=>{console.log('Error increasing quantity');callBack();});
+            }).catch();
         }
 
-    Reduce()
+    IncreaseQuantity (cartItem, callBack)
         {
-            // for(let cartItem of items)
-            // {
-            //     if (cartItem.productID == id && cartItem.quantity > 1)
-            //    /         cartItem.quantity -= e1;
-            //         this.cartValue -= +allProducts[id].price;
-            //         break;
-            //     }
-            // }
-            // this.WriteToJSON(items);
+            this.AddItem(cartItem,callBack);
         }
 
-    IncreaseQuantity ()
+    Delete (productID, callBack)
         {
-            // for(let cartItem of items)
-            // {
-            //     if (cartItem.productID == id)
-            //     {
-            //         cartItem.quantity += 1;
-            //         this.cartValue += +allProducts[id].price;
-            //         break;
-            //     }
-            // }
-            // this.WriteToJSON(items);
+            this.GetCart()
+            .then(result => 
+            {
+                for(let cartItem of result.products)
+                {
+                    if (cartItem.prodId == productID)
+                    {
+                       result.products.splice(result.products.indexOf(cartItem),1);
+                    }
+                }
+                if(result.products.length < 1) //delete cart
+                {
+                    this.Clear(callBack);
+                    return;
+                    // db.getDbClient.collection('Cart')
+                    //                 .deleteOne({userId:this.userId})
+                    //                 .then(result =>{;callBack();}).catch(err=>{callBack();});
+                }
+                else{
+                        db.getDbClient.collection('Cart')
+                                    .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                                    .then
+                                    (
+                                        result =>{callBack();}
+                                    ).catch(err=>{callBack();});
+                    }
+            }).catch();
         }
-
-    Delete ()
-        {
-            // for(let cartItem of items)
-            // {
-            //     if (cartItem.productID == id)
-            //     {
-            //         items.splice(items.indexOf(cartItem),1);
-            //         this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
-            //         break;
-            //     }
-            // }
-            // this.WriteToJSON(items);
-        }
+    
+    Clear(callBack)
+    {
+        db.getDbClient.collection('Cart')
+                                    .deleteOne({userId:this.userId})
+                                    .then(result =>{;callBack();}).catch(err=>{callBack();});
+    }
 }
 
 module.exports = 

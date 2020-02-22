@@ -1,23 +1,44 @@
 const Cart = require('../Models/Cart').cart;
 const cart =  new Cart(1);
 const CartItem = require('../Models/CartItem').cartItem;
+const Product = require('../../Common/Models/Product');
 
 function Render_CartPage(response)
 {
-    // console.log(require('../../../app').get('cart'));
-    for(const cartItem of cartItems)
-    {
-        let product = products[cartItem.productID];
-        cartItemsForView.push(
+    cart.GetCart().then(result =>
+        {
+            const cartItemsForView = [];
+            let cartValue = 0;
+            if (result)
             {
-                id:products.indexOf(product),
-                name:product.name,
-                price:product.price,
-                quantity:cartItem.quantity,
-                url:product.url
-            });
-    }
-    response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartDetails[1] });
+                for (const item of result.products)
+                {
+                    Product.GetProduct(item.prodId).then
+                    (
+                        product =>
+                        {
+                            cartValue += (product.price * item.quantity);
+                            cartItemsForView.push(
+                                {
+                                    id:item.prodId,
+                                    name:product.name,
+                                    price:product.price,
+                                    quantity:item.quantity,
+                                    url:product.url
+                                });
+                            if(result.products.indexOf(item) == result.products.length-1)
+                            {
+                                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+                            }
+                        }
+                    ).catch();
+                }
+            }
+            else
+            {
+                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+            }
+        }).catch(err =>{});
 }
 
 function AddToCart(productID,res)
@@ -26,26 +47,31 @@ function AddToCart(productID,res)
     // .then(result => {console.log(result);res.redirect('/User');}).catch(err => {console.log(err);});
 }
 
-function ModifyCart(productID, action)
+function ModifyCart(productID, action, callBack)
 {    
-    const cart = require('../../../app').get('cart');
     if(action == 'reduce')
     {
-        cart.ReduceQuantity(productID);
+        cart.ReduceQuantity(productID, callBack);
     }
     else if(action == 'add')
     {
-        cart.IncreaseQuantity(productID);
+        cart.IncreaseQuantity(new CartItem(productID,1),callBack);
     }
     else if(action == 'delete')
     {
-        cart.Delete(productID);
+        cart.Delete(productID,callBack);
     }
+}
+
+function Clear(callBack)
+{
+    cart.Clear(callBack);
 }
 
 module.exports = 
 {
     renderPage:Render_CartPage,
     addToCart:AddToCart,
-    modifyCart:ModifyCart
+    modifyCart:ModifyCart,
+    clear:Clear
 }

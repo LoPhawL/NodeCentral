@@ -18,17 +18,21 @@ router.use('/Products',(req,res,next)=>
     controllers.products.renderPage(res);
 });
 
-// router.use('/Cart/:productId/:action',(req,res,next)=>
-// {
-//   controllers.cart.modifyCart(req.params['productId'],req.params['action']);
-//   res.redirect('/User/Cart');
-// });
+router.use('/Cart/Clear',(req,res,next)=>
+{
+  controllers.cart.clear(()=>res.redirect('/User/Cart'));
+});
+
+router.use('/Cart/:productId/:action',(req,res,next)=>
+{
+  controllers.cart.modifyCart(req.params['productId'],req.params['action'], ()=>res.redirect('/User/Cart'));
+});
 
 
-// router.use('/Cart',(req,res,next)=>
-// {
-//     controllers.cart.renderPage(res);
-// });
+router.use('/Cart',(req,res,next)=>
+{
+    controllers.cart.renderPage(res);
+});
 
 // router.use('/Orders',(req,res,next)=>
 // {
