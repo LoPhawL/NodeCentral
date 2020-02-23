@@ -1,51 +1,48 @@
+const Cart = require('../Models/Cart').cart;
+const cart = new Cart();
+
 function Render_CartPage(response)
 {
-    // console.log(require('../../../app').get('cart'));
-    const app = require('../../../app');
-    const cartDetails = app.get('cart').GetCart();
-    const cartItems = cartDetails[0];
-    const products = app.get('products');
-    const cartItemsForView = [];
-    for(const cartItem of cartItems)
-    {
-        let product = products[cartItem.productID];
-        cartItemsForView.push(
-            {
-                id:products.indexOf(product),
-                name:product.name,
-                price:product.price,
-                quantity:cartItem.quantity,
-                url:product.url
-            });
-    }
-    response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartDetails[1] });
+    let cartItemsForView=[]
+    let cartValue = 0;
+    cart.GetCart().then(result => 
+        {
+            cartItemsForView = result.recordsets[0];
+            response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:result.recordsets[1][0].total});
+        });     
 }
 
-function AddToCart(productID)
+function AddToCart(productID, callBack)
 {
-    require('../../../app').get('cart').AddItem(productID);
+    cart.AddItem(productID).then(result=>{callBack();});
 }
 
-function ModifyCart(productID, action)
+function ModifyCart(productID, action, callBack)
 {
     const cart = require('../../../app').get('cart');
     if(action == 'reduce')
     {
-        cart.ReduceQuantity(productID);
+        cart.ReduceQuantity(productID).then(res => {callBack();});
     }
     else if(action == 'add')
     {
-        cart.IncreaseQuantity(productID);
+        cart.IncreaseQuantity(productID).then(res => {callBack();});
     }
     else if(action == 'delete')
     {
-        cart.Delete(productID);
+        cart.Delete(productID).then(res => {callBack();});
     }
+}
+
+function clearCart(res)
+{
+    cart.ClearCart().then(result=>{res.redirect('/User/Cart');});
 }
 
 module.exports = 
 {
     renderPage:Render_CartPage,
     addToCart:AddToCart,
-    modifyCart:ModifyCart
+    modifyCart:ModifyCart,
+    clearCart:clearCart,
 }

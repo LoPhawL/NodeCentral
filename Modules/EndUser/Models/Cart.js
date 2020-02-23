@@ -1,129 +1,75 @@
 let CartItem = require('./CartItem').cartItem;
-const path = require('path');
-const fs = require('fs');
-const allProducts = require('../../../app').get('products');
+const db = require('../../../Utils/Database');
 
 class Cart
 {
-    constructor()
+    constructor(user)
     {
-        this.cartsJsonFile = path.dirname(process.mainModule.filename)+'/Data/Cart.json';
-        this.length = 0;
-        this.cartValue = 0;
-        let items = [];
-
-        this.AddItem = function(productID)
-            {
-                if(items.length < 1) //cart is empty
-                {
-                    items.push(new CartItem(+productID,1));
-                    this.cartValue += (+allProducts[productID].price);
-                    this.length += 1;
-                }
-                else // cart is not empty
-                {
-                    for (let cartItem of items) //checking if the item added is already present in cart
-                    {
-                        if(cartItem.productID == productID) // item is already present in cart, hence increasing the quantity of the same item.
-                        {
-                            cartItem.quantity += 1;
-                            this.cartValue += (+allProducts[productID].price);
-                            this.WriteToJSON(items);
-                            return;
-                        }
-                    }
-                    // item is not found in cart, hence proceeding to add new cart item.
-                    items.push(new CartItem(+productID,1));
-                    this.cartValue += (+allProducts[productID].price);
-                    this.length += 1;
-                }
-
-                this.WriteToJSON(items); // updating or writing the changes to json.
-            };
-
-        this.RemoveItem = function(productID)
-            {
-                if(productID in items)
-                {
-                    items.splice(items.indexOf(productID),1);
-                    this.length -= 1;
-                }
-            };
-
-        this.GetCart = function()
-            {
-                return [[...items], this.cartValue];
-            };
-
-       this.ReadFromJSON = function()
-            {// if json exists
-                    // read and serialize json
-                    // set this.items to items from json
-                    // set this.cartValue to cartValue from json
-                if(fs.existsSync(this.cartsJsonFile))
-                {
-                    const cartData = JSON.parse(fs.readFileSync(this.cartsJsonFile).toString());
-                    items = cartData.items;
-                    this.cartValue = cartData.cartValue;
-                }
-                else
-                {
-                    fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
-                }
-            };
-
-            this.ReduceQuantity = function(id)
-            {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id && cartItem.quantity > 1)
-                    {
-                        cartItem.quantity -= 1;
-                        this.cartValue -= +allProducts[id].price;
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            };
+        this.user = 1;//user
+    }
     
-            this.IncreaseQuantity = function(id)
+    AddItem(productID)
+    {
+       return db.then(pool =>
             {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id)
-                    {
-                        cartItem.quantity += 1;
-                        this.cartValue += +allProducts[id].price;
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            }
-    
-            this.Delete = function(id)
-            {
-                for(let cartItem of items)
-                {
-                    if (cartItem.productID == id)
-                    {
-                        items.splice(items.indexOf(cartItem),1);
-                        this.cartValue -= (+allProducts[id].price * +cartItem.quantity);
-                        break;
-                    }
-                }
-                this.WriteToJSON(items);
-            }
-        this.ReadFromJSON();
+                return pool.request().query(`Exec AddToCart @user = ${this.user}, @productId = ${productID}`);
+            });
     }
 
-    WriteToJSON(items)
+    GetCart()
     {
-        fs.writeFileSync(this.cartsJsonFile, JSON.stringify({items:items,cartValue:this.cartValue}));
-        // Check if json exists
-            // if exists
-                // rewrite items and cartValue to json
-            // else
-                // create and write items and cartValue to json
+        const query = 
+        `Select *  Into #CartDetails From
+        (SELECT P.Id as id, P.name, P.price, C.Quantity as quantity, P.url, p.price*c.Quantity as cost FROM Cart C INNER JOIN Products P ON 
+        C.ProductId = P.Id WHERE UserId = ${this.user.toString()}) As T
+    
+        Select * from #CartDetails
+        Select sum(cost) as total from #CartDetails
+
+        Drop Table #CartDetails`;
+      return db.then(pool =>
+            {
+                return pool.request().query(query);
+            });
+    };
+
+    ReduceQuantity(id)
+    {
+        return db.then(pool => 
+            {
+                return pool.request().query
+                    (
+                        `if (Select Quantity from cart where ProductId = ${id} and UserId = ${this.user}) > 1
+                            Begin
+                                Update Cart Set Quantity -= 1 where ProductId = ${id} and UserId = ${this.user}
+                            End`
+                    )
+                .then(result=>{}).catch(err=>console.log(err));
+            });
+        
+    };
+
+    IncreaseQuantity(id)
+    {
+        return this.AddItem(id);
+    }
+
+    Delete(id)
+    {
+        return db.then(pool => 
+            {
+                return pool.request().query(`Delete From cart where UserId = ${this.user} and ProductId = ${id}`)
+                .then(result=>{}).catch(err=>console.log(err));
+            });
+    }
+
+    ClearCart()
+    {
+        return db.then(pool => 
+            {
+                return pool.request().query(`Delete From cart where UserId = ${this.user}`)
+                .then(result=>{}).catch(err=>console.log(err));
+            });   
     }
 }
 

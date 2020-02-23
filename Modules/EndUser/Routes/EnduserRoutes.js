@@ -18,10 +18,14 @@ router.use('/Products',(req,res,next)=>
     controllers.products.renderPage(res);
 });
 
+router.use('/Cart/ClearCart',(req,res,next)=>
+{
+    controllers.cart.clearCart(res);
+});
+
 router.use('/Cart/:productId/:action',(req,res,next)=>
 {
-  controllers.cart.modifyCart(req.params['productId'],req.params['action']);
-  res.redirect('/User/Cart');
+  controllers.cart.modifyCart(req.params['productId'],req.params['action'], ()=>res.redirect('/User/Cart'));
 });
 
 
@@ -30,15 +34,17 @@ router.use('/Cart',(req,res,next)=>
     controllers.cart.renderPage(res);
 });
 
-router.use('/Orders',(req,res,next)=>
-{
-    controllers.orders.renderPage(res);
-});
+
+
+
+// router.use('/Orders',(req,res,next)=>
+// {
+//     controllers.orders.renderPage(res);
+// });
 
 router.use('/AddToCart',(req,res,next)=>
 {
-    controllers.cart.addToCart(req.body.productID);
-    res.redirect('/User');
+    controllers.cart.addToCart(req.body.productID, ()=>{res.redirect('/User')});
 });
 
 router.use((request, response, next) => {

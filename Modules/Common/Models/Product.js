@@ -1,5 +1,3 @@
-const storagePath = require('path').join(__dirname , '/../../../Data/Products.json');
-const fs = require('fs');
 const db = require('../../../Utils/Database');
 
 class Product

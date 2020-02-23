@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="d-flex align-items-center">
-                    <div><h3>&#8377; <%= cartItem.price * cartItem.quantity %></h3></div>
+                    <div><h3>&#8377; <%= cartItem.cost %></h3></div>
                 </div>
             </div>
         </div>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="d-flex flex-column-reverse mr-3" style="padding-bottom: 0.5rem;;">
-            <div> <a href="" class="btn btn-outline-danger">Clear cart</a></div>
+            <div> <a href="/User/Cart/ClearCart" class="btn btn-outline-danger">Clear cart</a></div>
         </div>
     </div>
     <% }%>
