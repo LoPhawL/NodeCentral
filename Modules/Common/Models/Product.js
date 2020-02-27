@@ -9,6 +9,7 @@ class Product
         this.url = 'https://source.unsplash.com/600x600/?'+url;
         this.price = price;
         this.description = description;
+        this.createdBy = new mongoDb.ObjectID(require('../../../app').get('admin'));
     }
 
     Save(savedCallBack)

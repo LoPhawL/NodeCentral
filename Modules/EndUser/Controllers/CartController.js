@@ -1,5 +1,5 @@
 const Cart = require('../Models/Cart').cart;
-const cart =  new Cart(1);
+const cart =  new Cart( require('../../../app').get('endUser') );
 const CartItem = require('../Models/CartItem').cartItem;
 const Product = require('../../Common/Models/Product');
 

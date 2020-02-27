@@ -7,7 +7,7 @@ class CartHelper
     constructor(userId)
     {
         this._id = null;
-        this.userId = 1;
+        this.userId =  userId;
         this.products = {};
 
         this.db = require('../../../Utils/Database');
