@@ -33,10 +33,15 @@ router.use('/Cart',(req,res,next)=>
     controllers.cart.renderPage(res);
 });
 
-// router.use('/Orders',(req,res,next)=>
-// {
-//     controllers.orders.renderPage(res);
-// });
+router.use('/CheckOut',(req,res,next)=>
+{
+    controllers.cart.checkOut(()=>{res.redirect('/User/Orders');});
+});
+
+router.use('/Orders',(req,res,next)=>
+{
+    controllers.orders.renderPage(res);
+});
 
 router.use('/AddToCart',(req,res,next)=>
 {

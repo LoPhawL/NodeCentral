@@ -13,7 +13,6 @@ function Render_EditProduct(response, id)
             response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
         }
     ).catch(err=>{console.log(err);});
-    
     return;
 }
 

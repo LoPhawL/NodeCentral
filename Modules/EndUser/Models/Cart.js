@@ -1,6 +1,7 @@
 // let CartItem = require('./CartItem').cartItem;
 const db = require('../../../Utils/Database');
 const mongoDb = require('mongodb');
+const Order = require('./Order').order;
 
 class CartHelper
 {
@@ -114,6 +115,11 @@ class CartHelper
         db.getDbClient.collection('Users')
                                     .updateOne({_id:this.userId}, {$unset:{cart:''}})
                                     .then(result =>{;callBack();}).catch(err=>{callBack();});
+    }
+
+    CheckOut(callBack)
+    {
+        return Order.CheckOut(this, callBack);
     }
 }
 

@@ -61,10 +61,16 @@ function Clear(callBack)
     cart.Clear(callBack);
 }
 
+function CheckOut(callBack)
+{
+    cart.CheckOut(callBack);
+}
+
 module.exports = 
 {
     renderPage:Render_CartPage,
     addToCart:AddToCart,
     modifyCart:ModifyCart,
-    clear:Clear
+    clear:Clear,
+    checkOut:CheckOut
 }

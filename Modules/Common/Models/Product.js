@@ -46,7 +46,7 @@ class Product
 
     static GetProduct(id)
     {
-       return db.getDbClient.collection('Products').findOne({_id: id});
+       return db.getDbClient.collection('Products').findOne({_id: new mongoDb.ObjectID(id)});
     }
 }
 
