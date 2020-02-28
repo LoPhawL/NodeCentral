@@ -28,7 +28,6 @@ router.use('/Cart/:productId/:action',(req,res,next)=>
   controllers.cart.modifyCart(req.params['productId'],req.params['action'], ()=>res.redirect('/User/Cart'));
 });
 
-
 router.use('/Cart',(req,res,next)=>
 {
     controllers.cart.renderPage(res);

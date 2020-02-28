@@ -1,4 +1,4 @@
-let CartItem = require('./CartItem').cartItem;
+// let CartItem = require('./CartItem').cartItem;
 const db = require('../../../Utils/Database');
 const mongoDb = require('mongodb');
 
@@ -16,38 +16,29 @@ class CartHelper
    
     AddItem (cartItem, callBack)
         {
-            db.getDbClient.collection('Cart').findOne({userId:this.userId})
+            db.getDbClient.collection('Users').findOne({_id:this.userId},{projection:{cart:1}})//findOne({userId:this.userId})
             .then(result => 
                 {
-                    if(result) // cart is present for the user.
+                    if(result.cart) // cart is present for the user.
                     {
-                        for (const item of result.products)
+                        var updatingCartItem = result.cart.filter(dbCartItem => cartItem.prodId.equals(dbCartItem.prodId));
+                        if(updatingCartItem.length)//Product added is already present in the cart.
                         {
-                            if(item.prodId == cartItem.productID)//cart is present for the user. Product added is already present in the cart.
-                            {   
-                                item.quantity += 1;//increment the quantity of the productId in the product document.
-                                db.getDbClient.collection('Cart')
-                                .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
-                                .then
-                                (
-                                    result =>{callBack();}//console.log('Item is already present in the cart. Increased quantity.');
-                                ).catch(err=>{console.log('Error while increasing quantity');callBack();});
-                                return;
-                            }
+                            let newCartItem = {...updatingCartItem[0]};
+                            newCartItem.quantity += 1;
+                            result.cart[result.cart.indexOf(updatingCartItem[0])] =  newCartItem;
                         }
-                        //cart is present for the user. Product added is not present in the cart.
-                        result.products.push({prodId:cartItem.productID,quantity:cartItem.quantity});
-                        db.getDbClient.collection('Cart')
-                                .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
-                                .then
-                                (
-                                    result =>{callBack();}//console.log('Cart exists for the user, but item is not present. Added item.');
-                                ).catch(err=>{console.log('Error while adding item to existing cart');callBack();});
+                        else// Product added is not present in the cart.
+                        {
+                            result.cart.push({...cartItem});
+                        }
+                        this.db.getDbClient.collection('Users').updateOne({_id:this.userId},{$set:{cart:result.cart}})
+                        .then(res => {callBack();});
                     }
                     else//cart is not present for the user. i.e, no document with userId exists in cart collection.
                     {
-                         //Create cart with the userid and added product.
-                        this.db.getDbClient.collection('Cart').insertOne({userId:this.userId,products:[{prodId:cartItem.productID,quantity:cartItem.quantity}]})
+                    //      //Create cart with the userid and added product.
+                         this.db.getDbClient.collection('Users').updateOne({_id:this.userId},{$set:{cart:[{prodId:cartItem.prodId,quantity:cartItem.quantity }]}})
                         .then(result=>{callBack();}).catch(err=>{callBack();});//console.log('Cart is not present. Created cart with the added item');
                     }
                 })
@@ -56,7 +47,7 @@ class CartHelper
         }
     GetCart()
         {
-            return db.getDbClient.collection('Cart').findOne({userId:this.userId});
+            return db.getDbClient.collection('Users').findOne({_id:this.userId},{projection:{cart:1}});
         }
 
     ReduceQuantity(productID, callBack)
@@ -64,17 +55,17 @@ class CartHelper
             this.GetCart()
             .then(result => 
             {
-                for(let cartItem of result.products)
+                for(let cartItem of result.cart)
                 {
-                    if (cartItem.prodId == productID)
+                    if (cartItem.prodId.equals(new mongoDb.ObjectID(productID)))
                     {
                         if(cartItem.quantity == 1){callBack();return;}
                         cartItem.quantity -= 1;
                         break;
                     }
                 }
-                db.getDbClient.collection('Cart')
-                            .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                db.getDbClient.collection('Users')
+                            .updateOne({_id:this.userId}, {$set:{cart:result.cart}})
                             .then
                             (
                                 result =>{callBack();}
@@ -92,14 +83,14 @@ class CartHelper
             this.GetCart()
             .then(result => 
             {
-                for(let cartItem of result.products)
+                for(let cartItem of result.cart)
                 {
-                    if (cartItem.prodId == productID)
+                    if (cartItem.prodId.equals(new mongoDb.ObjectID(productID)))
                     {
-                       result.products.splice(result.products.indexOf(cartItem),1);
+                       result.cart.splice(result.cart.indexOf(cartItem),1);
                     }
                 }
-                if(result.products.length < 1) //delete cart
+                if(result.cart.length < 1) //delete cart
                 {
                     this.Clear(callBack);
                     return;
@@ -108,8 +99,8 @@ class CartHelper
                     //                 .then(result =>{;callBack();}).catch(err=>{callBack();});
                 }
                 else{
-                        db.getDbClient.collection('Cart')
-                                    .updateOne({_id:new mongoDb.ObjectID(result._id)}, {$set:result})
+                    db.getDbClient.collection('Users')
+                                    .updateOne({_id:this.userId}, {$set:{cart:result.cart}})
                                     .then
                                     (
                                         result =>{callBack();}
@@ -120,8 +111,8 @@ class CartHelper
     
     Clear(callBack)
     {
-        db.getDbClient.collection('Cart')
-                                    .deleteOne({userId:this.userId})
+        db.getDbClient.collection('Users')
+                                    .updateOne({_id:this.userId}, {$unset:{cart:''}})
                                     .then(result =>{;callBack();}).catch(err=>{callBack();});
     }
 }

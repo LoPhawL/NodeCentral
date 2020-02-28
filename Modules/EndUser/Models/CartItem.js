@@ -1,8 +1,10 @@
+const mongoDb = require('mongodb');
+
 class CartItem
 {
     constructor(productID, quantity)
     {
-        this.productID = productID;
+        this.prodId = new mongoDb.ObjectID(productID);
         this.quantity = quantity;
     }
 }

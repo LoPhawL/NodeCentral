@@ -9,24 +9,17 @@ function Render_CartPage(response)
         {
             const cartItemsForView = [];
             let cartValue = 0;
-            if (result)
+            if (result && result.cart && Boolean(result.cart.length))
             {
-                for (const item of result.products)
+                for (const item of result.cart)
                 {
                     Product.GetProduct(item.prodId).then
                     (
                         product =>
                         {
                             cartValue += (product.price * item.quantity);
-                            cartItemsForView.push(
-                                {
-                                    id:item.prodId,
-                                    name:product.name,
-                                    price:product.price,
-                                    quantity:item.quantity,
-                                    url:product.url
-                                });
-                            if(result.products.indexOf(item) == result.products.length-1)
+                            cartItemsForView.push({...product,quantity:item.quantity});
+                            if(result.cart.indexOf(item) == result.cart.length-1)
                             {
                                 response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
                             }
