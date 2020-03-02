@@ -1,36 +1,15 @@
-const mongodb = require('mongodb');
-const db = require('../../../Utils/Database');
-
-class User
-{
-    constructor(name, email, admin)
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const userSchema = new Schema(
     {
-        this.name = name;
-        this.email = email;
-        this.isAdmin = admin;
-    }
+        email:{type:String, required:true},
+        name:{type:String,required:true},
+        password:{type:String,required:true},
+        isAdmin:{type:Boolean,required:true},
+        cart:
+            [
+                {productId:{type:Schema.Types.ObjectId,required:true},quantity:{type:Number,required:true}}
+            ]
+    });
 
-    Save()
-    {
-        return db.getDbClient.collection('Users').insertOne(this);
-        // .then(result=>{console.log(result);callBack();})
-        // .catch(err => {console.log(err);callBack();});
-    }
-
-    static GetUser(userId)
-    {
-        return db.getDbClient.collection('Users').findOne({_id:new mongodb.ObjectID(userId)});
-        // .then()
-        // .catch();
-    }
-
-    static Login(uEmail, uPassword)
-    {   
-        return db.getDbClient.collection('Users').findOne({$and:[{"email":uEmail},{"password":uPassword}]});
-    }
-}
-
-module.exports = 
-{
-    user:User
-}
+module.exports = mongoose.model('User',userSchema);

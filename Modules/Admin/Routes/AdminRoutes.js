@@ -12,7 +12,7 @@ router.use('/Products',(req,res,next)=>
 
 router.post('/AddProduct',(req,res,next)=>
 {
-  controllers.addProduct.saveProduct(req.body, ()=>{ res.redirect('Products');});
+  controllers.addProduct.saveProduct(req.body,req.admin, ()=>{ res.redirect('Products');});
 });
 
 router.use('/AddProduct',(req,res,next)=>
@@ -22,7 +22,7 @@ router.use('/AddProduct',(req,res,next)=>
 
 router.post('/EditProduct',(req,res,next)=>
 {
-  controllers.addProduct.editProduct(req.body, ()=>{ res.redirect('/');});
+  controllers.addProduct.editProduct(req.body,req.admin, ()=>{ res.redirect('/');});
 });
 
 router.use('/EditProduct',(req,res,next)=>

@@ -16,22 +16,23 @@ function Render_EditProduct(response, id)
     return;
 }
 
-function SaveProduct(requestBody, ProductSavedCallback)
+function SaveProduct(requestBody,adminId, ProductSavedCallback)
 {
     const prod = new Product(
         {
             name:requestBody.pName,
             url: 'https://source.unsplash.com/600x600/?'+requestBody.pImageUrl,
             price: requestBody.pPrice,
-            description: requestBody.pDesc
+            description: requestBody.pDesc,
+            createdBy:adminId
         });
     prod.save().then(result => {ProductSavedCallback();});
 }
 
-function EditProduct(requestBody,editedCallBack)
+function EditProduct(requestBody,adminId,editedCallBack)
 {
     Product.findByIdAndUpdate(requestBody.editID, 
-        {name:requestBody.pName, url:'https://source.unsplash.com/600x600/?'+requestBody.pImageUrl, price:+requestBody.pPrice, description:requestBody.pDesc})
+        {name:requestBody.pName, url:'https://source.unsplash.com/600x600/?'+requestBody.pImageUrl, price:+requestBody.pPrice, description:requestBody.pDesc, createdBy:adminId})
         .then(result => {console.log(result); editedCallBack();});
 }
 
