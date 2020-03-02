@@ -1,6 +1,6 @@
 function Show_ProductDetails(productId,response)
 {
-    require('../../Common/Models/Product').GetProduct(productId)
+    require('../../Common/Models/Product').findById(productId)
     .then(product => 
         {response.render('ProductDetails',
             {

@@ -20,20 +20,20 @@ router.use('/AddProduct',(req,res,next)=>
     controllers.addProduct.renderPage(res);
 });
 
-router.post('/EditProduct',(req,res,next)=>
-{
-  controllers.addProduct.editProduct(req.body, ()=>{ res.redirect('/');});
-});
+// router.post('/EditProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.editProduct(req.body, ()=>{ res.redirect('/');});
+// });
 
-router.use('/EditProduct',(req,res,next)=>
-{
-  controllers.addProduct.render_editProduct(res, req.query.id);
-});
+// router.use('/EditProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.render_editProduct(res, req.query.id);
+// });
 
-router.use('/DeleteProduct',(req,res,next)=>
-{
-  controllers.addProduct.deleteProduct(req.query.id, res);  
-});
+// router.use('/DeleteProduct',(req,res,next)=>
+// {
+//   controllers.addProduct.deleteProduct(req.query.id, res);  
+// });
 
 router.use((request, response, next) => {
     if (request.originalUrl != "/Admin" && request.originalUrl != "/Admin/")  //wrong route

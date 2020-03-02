@@ -1,6 +1,7 @@
 function Render_ProductsPage(response)
 {
-    require('../../Common/Models/Product').GetAllProducts((data)=>
+    require('../../Common/Models/Product').find()
+    .then((data)=>
     {
         response.render('Product_a', {module:'admin',page:'Products', products:data });
     });

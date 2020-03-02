@@ -18,8 +18,14 @@ function Render_EditProduct(response, id)
 
 function SaveProduct(requestBody, ProductSavedCallback)
 {
-    const prod = new Product(requestBody.pName, requestBody.pImageUrl, requestBody.pPrice, requestBody.pDesc);
-    prod.Save(() => {ProductSavedCallback();});
+    const prod = new Product(
+        {
+            name:requestBody.pName,
+            url: 'https://source.unsplash.com/600x600/?'+requestBody.pImageUrl,
+            price: requestBody.pPrice,
+            description: requestBody.pDesc
+        });
+    prod.save().then(result => {ProductSavedCallback();});
 }
 
 function EditProduct(requestBody,editedCallBack)
@@ -42,7 +48,7 @@ module.exports =
 {
     renderPage:Render_ProductsPage,
     saveProduct:SaveProduct,
-    render_editProduct:Render_EditProduct,
-    editProduct:EditProduct,
-    deleteProduct:DeleteProduct
+    // render_editProduct:Render_EditProduct,
+    // editProduct:EditProduct,
+    // deleteProduct:DeleteProduct
 }

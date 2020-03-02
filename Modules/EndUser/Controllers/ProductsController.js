@@ -1,6 +1,6 @@
 function Render_ProductsPage(response)
 {
-    const products = require('../../Common/Models/Product').GetAllProducts
+    require('../../Common/Models/Product').find().then
     (
         products =>
         {
