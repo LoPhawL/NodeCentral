@@ -1,9 +1,9 @@
-const Order = require('../Models/Order').order
+const Order = require('../Models/Order');
 
 function Render_OrdersPage(response)
 {
     // response.render('Orders',{module:'enduser', page:'Orders'});
-    Order.GetOrders().then(res => {response.send(res)});
+    Order.find().then(res => {response.send(res)});
     
 }
 

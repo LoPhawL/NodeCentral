@@ -8,34 +8,25 @@ const mongoDb = require('mongodb');
 
 function Render_CartPage(userId, response)
 {
-    User.find(userId).populate('cart.productId').then(result =>
+    User.findById(userId).populate({path:'cart.productId',model:'Product', select:'-description -createdBy -__v'})
+    .then(user =>
         {
-            response.send();
-            
-            // const cartItemsForView = [];
-            // let cartValue = 0;
-            // if (result && result.cart && Boolean(result.cart.length))
-            // {
-            //     for (const item of result.cart)
-            //     {
-            //         Product.GetProduct(item.prodId).then
-            //         (
-            //             product =>
-            //             {
-            //                 cartValue += (product.price * item.quantity);
-            //                 cartItemsForView.push({...product,quantity:item.quantity});
-            //                 if(result.cart.indexOf(item) == result.cart.length-1)
-            //                 {
-            //                     response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
-            //                 }
-            //             }
-            //         ).catch();
-            //     }
-            // }
-            // else
-            // {
-            //     response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
-            // }
+            const cartItemsForView = [];
+            let cartValue = 0;
+            if (user && user.cart && Boolean(user.cart.length))
+            {
+                for (const item of user.cart)
+                {
+                    cartValue += (item.productId.price * item.quantity);
+                    cartItemsForView.push({_id:item.productId._id,name:item.productId.name,price:item.productId.price,url:item.productId.url,quantity:item.quantity});
+                }
+                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+                return;
+            }
+            else
+            {
+                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+            }
         }).catch(err =>{});
 }
 
@@ -62,43 +53,34 @@ function AddToCart(userId, productId, res)
                 user.cart.push({productId:productId, quantity:1})
             }
             user.save();//async, function returns before saving.
-            return;
+            res.redirect('/User');
         }).catch(err =>{console.log(err);});
-    // cart.AddItem(new CartItem(productID,1), resultOrError => res.redirect('/User'));
-    // .then(result => {console.log(result);res.redirect('/User');}).catch(err => {console.log(err);});
 }
 
-function ModifyCart(productID, action, callBack)
+function ModifyCart(userId, productID, action, callBack)
 {    
-    if(action == 'reduce')
+    User.findById(userId).select('cart').then(user=> 
     {
-        cart.ReduceQuantity(productID, callBack);
-    }
-    else if(action == 'add')
-    {
-        cart.IncreaseQuantity(new CartItem(productID,1),callBack);
-    }
-    else if(action == 'delete')
-    {
-        cart.Delete(productID,callBack);
-    }
+        user.ModifyCart(productID, action, callBack);
+    });
 }
 
-function Clear(callBack)
+function Clear(userId,callBack)
 {
-    cart.Clear(callBack);
+    User.findById(userId).then(user => user.ClearCart(callBack));
 }
 
-function CheckOut(callBack)
+function CheckOut(userId,callBack)
 {
-    cart.CheckOut(callBack);
+    User.findById(userId).populate({path:'cart.productId',model:'Product', select:'-url -description -createdBy -__v'})
+    .then(user => user.CheckOut(userId,callBack));
 }
 
 module.exports = 
 {
     renderPage:Render_CartPage,
     addToCart:AddToCart,
-    // modifyCart:ModifyCart,
-    // clear:Clear,
-    // checkOut:CheckOut
+    modifyCart:ModifyCart,
+    clear:Clear,
+    checkOut:CheckOut
 }
