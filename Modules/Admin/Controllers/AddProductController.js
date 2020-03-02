@@ -7,7 +7,7 @@ function Render_ProductsPage(response)
 
 function Render_EditProduct(response, id)
 {
-    Product.GetProduct(id).then
+    Product.findById(id).then
     (
         product=>{
             response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
@@ -30,15 +30,15 @@ function SaveProduct(requestBody, ProductSavedCallback)
 
 function EditProduct(requestBody,editedCallBack)
 {
-    const prod = new Product(requestBody.pName, requestBody.pImageUrl, requestBody.pPrice, requestBody.pDesc);
-    const editId = requestBody.editID;
-    prod.Edit(editId,editedCallBack);
+    Product.findByIdAndUpdate(requestBody.editID, 
+        {name:requestBody.pName, url:'https://source.unsplash.com/600x600/?'+requestBody.pImageUrl, price:+requestBody.pPrice, description:requestBody.pDesc})
+        .then(result => {console.log(result); editedCallBack();});
 }
 
 function DeleteProduct(id,res)
 {
     //Dont delete if in cart
-    Product.Delete(id).then(result => 
+    Product.findByIdAndDelete(id).then(result => 
         {
             res.redirect('Products');
         });
@@ -48,7 +48,7 @@ module.exports =
 {
     renderPage:Render_ProductsPage,
     saveProduct:SaveProduct,
-    // render_editProduct:Render_EditProduct,
-    // editProduct:EditProduct,
-    // deleteProduct:DeleteProduct
+    render_editProduct:Render_EditProduct,
+    editProduct:EditProduct,
+    deleteProduct:DeleteProduct
 }
