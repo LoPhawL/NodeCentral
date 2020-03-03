@@ -60,8 +60,6 @@ userSchema.methods.CheckOut = function(userId,callBack)
             return {productId:cartItem.productId._id, quantity:cartItem.quantity,price:cartItem.productId.price}
         });
     order.items = iit;
-    console.log(order.items);
-    
     order.save().then(result => 
         {
             this.cart = [];
