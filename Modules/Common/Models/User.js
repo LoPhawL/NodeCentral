@@ -53,11 +53,15 @@ userSchema.methods.CheckOut = function(userId,callBack)
     order.userId = userId; 
     order.orderValue = 0;
     order.items = []
-    for (var cartItem of this.cart)
-    {
-        order.items.push( {productId:cartItem.productId._id, quantity:cartItem.quantity,price:cartItem.productId.price} );
-        order.orderValue += (cartItem.quantity * cartItem.productId.price);
-    }
+
+    var iit = this.cart.map(cartItem => 
+        {
+            order.orderValue += (cartItem.quantity * cartItem.productId.price);
+            return {productId:cartItem.productId._id, quantity:cartItem.quantity,price:cartItem.productId.price}
+        });
+    order.items = iit;
+    console.log(order.items);
+    
     order.save().then(result => 
         {
             this.cart = [];
