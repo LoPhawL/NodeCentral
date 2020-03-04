@@ -14,7 +14,8 @@ const MongoSessionStore = new mongoSessionConnect(
 const views = [
                 'Modules/Admin/Views','Modules/EndUser/Views',
                 'Modules/Common/Views/404','Modules/Common/Views/Header', 
-                'Modules/Common/Views/ProductList', 'Modules/Common/Views/AddToCart'
+                'Modules/Common/Views/ProductList', 'Modules/Common/Views/AddToCart',
+                'Modules/Common/Views/SignUp'
               ]
 const app = express();
 
@@ -24,6 +25,17 @@ app.set('views', views);
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('./Public'));
 app.use(session({secret:"1qaz", saveUninitialized:false, resave:false, store:MongoSessionStore}));
+
+app.get('/Signup', (request, response, next) => 
+{
+  authController.signup();
+  response.render('SignUp');
+});
+
+app.post('/Signup', (request, response, next) => 
+{
+  
+});
 
 app.post('/Login', (request, response, next) => 
 {
