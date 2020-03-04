@@ -68,14 +68,17 @@ function Login(request, response)
         request.session.mode = 'user'
         request.session.userId = adRes._id;
       }
-      if(request.session.mode == 'admin')
-      {
-        response.redirect('./Admin/Products');
-      }
-      else
-      {
-        response.redirect('./User/products');
-      }
+      request.session.save((err)=>{
+        if(request.session.mode == 'admin')
+        {
+          response.redirect('./Admin/Products');
+        }
+        else
+        {
+          response.redirect('./User/products');
+        }
+    });
+      
     })
   .catch(err=> console.log('login error',err)); ;
 }
