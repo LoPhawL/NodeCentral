@@ -6,7 +6,7 @@ const userSchema = new Schema(
     {
         email:{type:String, required:true},
         name:{type:String,required:true},
-        password:{type:String,required:true},
+        passwordHash:{type:String,required:true},
         signature:{type:String,required:true},
         isAdmin:{type:Boolean,required:true},
         cart:

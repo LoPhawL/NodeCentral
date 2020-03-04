@@ -28,13 +28,12 @@ app.use(session({secret:"1qaz", saveUninitialized:false, resave:false, store:Mon
 
 app.get('/Signup', (request, response, next) => 
 {
-  authController.signup();
   response.render('SignUp');
 });
 
 app.post('/Signup', (request, response, next) => 
 {
-  
+  authController.signup(request, response);
 });
 
 app.post('/Login', (request, response, next) => 
@@ -64,33 +63,38 @@ app.use((request, response, next) => {
 
 function Login(request, response)
 {
-  const  modeConfig =  Math.round( Math.random()*10 );
-  authController.login(modeConfig).
-  then(adRes => 
+  // const  modeConfig =  Math.round( Math.random()*10 );
+  authController.login(request).
+  then(user => 
     {
-      if (modeConfig % 2 == 0)
+      if (user)
       {
         request.session.isLoggedIn = true;
-        request.session.mode = 'admin'
-        request.session.userId = adRes._id;
-      }
-      else
-      {
-        request.session.isLoggedIn = true;
-        request.session.mode = 'user'
-        request.session.userId = adRes._id;
-      }
-      request.session.save((err)=>{
-        if(request.session.mode == 'admin')
+        request.session.userId = user._id;
+        if(user.isAdmin)
         {
-          response.redirect('./Admin/Products');
+          request.session.mode = 'admin'
         }
         else
         {
-          response.redirect('./User/products');
+          request.session.mode = 'user'
         }
-    });
-      
+        request.session.save((err)=>
+        {
+          if(request.session.mode == 'admin')
+          {
+            response.redirect('./Admin/Products');
+          }
+          else
+          {
+            response.redirect('./User/products');
+          }
+        });
+      }
+      else
+      {
+        response.redirect('/User')
+      }           
     })
   .catch(err=> console.log('login error',err)); ;
 }

@@ -1,20 +1,42 @@
-function Login(modeConfig)
+const User = require('../Models/User');
+const Security = require('../../../Utils/Security');
+
+function Login(request)
 {
     const User = require('../Models/User');
-    if (modeConfig % 2 == 0)
-    {
-        return User.findOne(  {  $and: [ {email:'ad@ad.com'} , {password:'123456'} ]  }  );        
-    }
-    else
-    {
-        return User.findOne({$and:[{email:'us1@a.com'},{password:'123456'}]});
-    }
+    return User.findOne(  {email:request.body.email} )
+    .then(user => 
+        {
+            if(user) //valid email
+            {
+                if(Security.HashEnteredPassword(request.body.password, user.signature) === user.passwordHash)
+                {
+                    return user; //valid password
+                }
+                return null;//invalid password
+            }
+            else//invalid email
+            {
+                return null; 
+            }
+        });        
 }
 
-function SignUp(email = "test@test.com", password = "12345678",name="test", isAdmin = false)
+function SignUp(req, res)
 {  
     const Security = require('../../../Utils/Security');
-    const passwordDerivatives = Security.CreatePasswordHash(password);
+    const passwordDerivatives = Security.CreatePasswordHash(req.body.password);
+    User.findOne({email:req.body.email})
+    .then(result=>{return result})
+    .then(result => { if (!result){ return new User(
+        {
+            name: req.body.name, 
+            email: req.body.email,
+            passwordHash: passwordDerivatives[0],
+            signature: passwordDerivatives[1] , 
+            isAdmin: false
+        }).save(); } else{res.redirect('/SignUp')}})
+    .then(result => {res.redirect('/User'); console.log(result);}).catch(err=>console.log(err));
 }
 
 module.exports = 

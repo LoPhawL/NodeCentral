@@ -21,7 +21,7 @@ router.use('/Products',(req,res,next)=>
 
 router.post('/AddProduct',(req,res,next)=>
 {
-  controllers.addProduct.saveProduct(req.body,req.admin, ()=>{ res.redirect('Products');});
+  controllers.addProduct.saveProduct(req.body,req.session.userId, ()=>{ res.redirect('/Admin/Products');});
 });
 
 router.use('/AddProduct',(req,res,next)=>
@@ -31,7 +31,7 @@ router.use('/AddProduct',(req,res,next)=>
 
 router.post('/EditProduct',(req,res,next)=>
 {
-  controllers.addProduct.editProduct(req.body,req.admin, ()=>{ res.redirect('/');});
+  controllers.addProduct.editProduct(req.body,req.admin, ()=>{ res.redirect('/Admin/Products');});
 });
 
 router.use('/EditProduct',(req,res,next)=>
@@ -54,6 +54,4 @@ router.use((request, response, next) => {
       response.redirect("/Admin/Products");
     }
   });
-
-
 module.exports = router;
