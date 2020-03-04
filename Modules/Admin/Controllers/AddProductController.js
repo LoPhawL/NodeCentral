@@ -1,16 +1,16 @@
 const Product = require('../../Common/Models/Product');
 
-function Render_ProductsPage(response)
+function Render_ProductsPage(request, response)
 {
-    response.render('../Views/AddProduct', {module:'admin',page:'AddProduct'});
+    response.render('../Views/AddProduct', {module:'admin',page:'AddProduct',isLoggedIn:request.session.isLoggedIn });
 }
 
-function Render_EditProduct(response, id)
+function Render_EditProduct(request, response, id)
 {
     Product.findById(id).then
     (
         product=>{
-            response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id});
+            response.render('../Views/AddProduct', {module:'admin',page:'EditProduct', product:product, productID:id,isLoggedIn:request.session.isLoggedIn });
         }
     ).catch(err=>{console.log(err);});
     return;

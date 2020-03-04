@@ -5,9 +5,18 @@ const controllers =
         addProduct : require('../Controllers/AddProductController'),
 };
 
+router.use((req,res,next)=> 
+{
+  if(req.session.mode == 'user')
+  {
+    res.redirect('/Logout');
+  }
+  else{next();}
+});
+
 router.use('/Products',(req,res,next)=>
 {
-  controllers.products.renderPage(res);
+  controllers.products.renderPage(req, res);
 });
 
 router.post('/AddProduct',(req,res,next)=>
@@ -17,7 +26,7 @@ router.post('/AddProduct',(req,res,next)=>
 
 router.use('/AddProduct',(req,res,next)=>
 {
-    controllers.addProduct.renderPage(res);
+    controllers.addProduct.renderPage(req, res);
 });
 
 router.post('/EditProduct',(req,res,next)=>
@@ -27,7 +36,7 @@ router.post('/EditProduct',(req,res,next)=>
 
 router.use('/EditProduct',(req,res,next)=>
 {
-  controllers.addProduct.render_editProduct(res, req.query.id);
+  controllers.addProduct.render_editProduct(req, res, req.query.id);
 });
 
 router.use('/DeleteProduct',(req,res,next)=>
@@ -38,7 +47,7 @@ router.use('/DeleteProduct',(req,res,next)=>
 router.use((request, response, next) => {
     if (request.originalUrl != "/Admin" && request.originalUrl != "/Admin/")  //wrong route
     {
-      response.status(404).render('404',{module:'admin',page:'404'});
+      response.status(404).render('404',{module:'admin',page:'404', isLoggedIn: request.session.isLoggedIn});
     }
     else //empty route
     { 

@@ -1,5 +1,6 @@
-function Show_ProductDetails(productId,response)
+function Show_ProductDetails(request,response)
 {
+    const productId = request.params['productId']
     require('../../Common/Models/Product').findById(productId)
     .then(product => 
         {response.render('ProductDetails',
@@ -7,7 +8,8 @@ function Show_ProductDetails(productId,response)
                 module:'enduser', 
                 page:'Products', //ProductDetails
                 product: product,
-                productID:productId
+                productID:productId,
+                isLoggedIn: request.session.isLoggedIn
             });});
 }
 

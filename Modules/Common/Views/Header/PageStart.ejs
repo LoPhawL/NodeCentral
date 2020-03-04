@@ -20,20 +20,23 @@
                             <a class="nav-link" href="/User/Products">Products</a>
                         <% } %>
                     </li>
-                    <li class="nav-item">
-                        <% if (page == 'Orders'){ %>
-                            <a class="nav-link active" href="/User/Orders"> Orders </a>
-                        <% } else{ %> 
-                            <a class="nav-link" href="/User/Orders"> Orders </a>
-                        <% } %>
-                    </li>
-                    <li class="nav-item">
-                        <% if (page == 'Cart'){ %>
-                            <a class="nav-link active" href="/User/Cart"> Cart </a>
-                        <% } else{ %> 
-                            <a class="nav-link" href="/User/Cart"> Cart </a>
-                        <% } %>
-                    </li>
+                    <%if(isLoggedIn){%>
+                        <li class="nav-item">
+                            <% if (page == 'Orders'){ %>
+                                <a class="nav-link active" href="/User/Orders"> Orders </a>
+                            <% } else{ %> 
+                                <a class="nav-link" href="/User/Orders"> Orders </a>
+                            <% } %>
+                        </li>
+                        <li class="nav-item">
+                            <% if (page == 'Cart'){ %>
+                                <a class="nav-link active" href="/User/Cart"> Cart </a>
+                            <% } else{ %> 
+                                <a class="nav-link" href="/User/Cart"> Cart </a>
+                            <% } %>
+                        </li>
+                    <% } %>
+
                 <% } else if (module == 'admin') {%>
                     <li class="nav-item">
                         <% if (page == 'Products'){ %>
@@ -50,8 +53,21 @@
                         <% } %>
                     </li>
                 <% } %> 
-                <li class="nav-item"> <a class="nav-link ml-5" href="/Admin">Admin</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/User">User</a></li>
+
+               <% if(!isLoggedIn) { %>
+
+                    <form class="form-inline ml-3 mr-1"  action="/Login" method="POST">
+                        <input type="text" class="form-control mr-1" placeholder="Email" name="email">
+                        <input type="password" class="form-control mr-1" placeholder="Password" name="password">
+                        <input type="submit" class="btn btn-success" value="Login">
+                    </form>
+                <% } else {%>
+                        <form class="form-inline ml-3 mr-1"  action="/Logout" method="GET">
+                            <input type="submit" class="btn btn-success" value="Logout">
+                        </form>
+                <% } %>
+                <!-- <li class="nav-item"> <a class="nav-link ml-5" href="/Admin">Admin</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/User">User</a></li> -->
             </ul>
         </div>
     </nav>

@@ -1,13 +1,14 @@
 // const Cart = require('../Models/Cart').cart;
 // const cart =  new Cart( require('../../../app').get('endUser') );
-const CartItem = require('../Models/CartItem').cartItem;
+// const CartItem = require('../Models/CartItem').cartItem;
 // const Product = require('../../Common/Models/Product');
 const User = require('../../Common/Models/User');
 const mongoDb = require('mongodb');
 
 
-function Render_CartPage(userId, response)
+function Render_CartPage(request, response)
 {
+    const userId = request.session.userId;
     User.findById(userId).populate({path:'cart.productId',model:'Product', select:'-description -createdBy -__v'})
     .then(user =>
         {
@@ -20,19 +21,19 @@ function Render_CartPage(userId, response)
                     cartValue += (item.productId.price * item.quantity);
                     cartItemsForView.push({_id:item.productId._id,name:item.productId.name,price:item.productId.price,url:item.productId.url,quantity:item.quantity});
                 }
-                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue, isLoggedIn:request.session.isLoggedIn });
                 return;
             }
             else
             {
-                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue });
+                response.render('Cart',{module:'enduser', page:'Cart', cart:cartItemsForView, cartValue:cartValue , isLoggedIn:request.session.isLoggedIn });
             }
         }).catch(err =>{});
 }
 
 function AddToCart(userId, productId, res)
 {
-    User.findOne(userId).then(user => 
+    User.findById(userId).then(user => 
         {
             if(user.cart.length > 0) // cart is present for the user.
             {
