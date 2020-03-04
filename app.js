@@ -3,6 +3,13 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const authController = require('./Modules/Common/Controllers/AuthenticationController');
+const mongoSessionConnect = require('connect-mongodb-session')(session);
+
+const MongoSessionStore = new mongoSessionConnect(
+  {
+    uri:"mongodb+srv://jas:JasJas@cluster0-fh9tz.mongodb.net/ManeOose",
+    collection:"Session"
+  });
 
 const views = [
                 'Modules/Admin/Views','Modules/EndUser/Views',
@@ -16,9 +23,7 @@ app.set('views', views);
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(express.static('./Public'));
-app.use(session({secret:"1qaz", saveUninitialized:false, resave:false}));
-
-
+app.use(session({secret:"1qaz", saveUninitialized:false, resave:false, store:MongoSessionStore}));
 
 app.post('/Login', (request, response, next) => 
 {
@@ -27,9 +32,7 @@ app.post('/Login', (request, response, next) =>
 
 app.get('/Logout',(request, response, next) => 
 {
-  request.session.destroy();
-  response.redirect('/User/Products');
-  // next();
+  request.session.destroy( ()=>response.redirect('/User/Products'));
 });
 
 app.use((request, response, next) => 
