@@ -1,25 +1,18 @@
 const router = require('express').Router();
+const AdminAuthGuard = require('../../../RouteGuards/AdminAuthGuard')
+
 const controllers = 
 {
         products : require('../Controllers/ProductsController'),
         addProduct : require('../Controllers/AddProductController'),
 };
 
-router.use((req,res,next)=> 
-{
-  if(req.session.mode == 'user')
-  {
-    res.redirect('/Logout');
-  }
-  else{next();}
-});
-
-router.use('/Products',(req,res,next)=>
+router.use('/Products',AdminAuthGuard,(req,res,next)=>
 {
   controllers.products.renderPage(req, res);
 });
 
-router.post('/AddProduct',(req,res,next)=>
+router.post('/AddProduct',AdminAuthGuard,(req,res,next)=>
 {
   controllers.addProduct.saveProduct(req.body,req.session.userId, ()=>{ res.redirect('/Admin/Products');});
 });
@@ -29,17 +22,17 @@ router.use('/AddProduct',(req,res,next)=>
     controllers.addProduct.renderPage(req, res);
 });
 
-router.post('/EditProduct',(req,res,next)=>
+router.post('/EditProduct',AdminAuthGuard,(req,res,next)=>
 {
   controllers.addProduct.editProduct(req.body,req.admin, ()=>{ res.redirect('/Admin/Products');});
 });
 
-router.use('/EditProduct',(req,res,next)=>
+router.use('/EditProduct',AdminAuthGuard,(req,res,next)=>
 {
   controllers.addProduct.render_editProduct(req, res, req.query.id);
 });
 
-router.use('/DeleteProduct',(req,res,next)=>
+router.use('/DeleteProduct',AdminAuthGuard,(req,res,next)=>
 {
   controllers.addProduct.deleteProduct(req.query.id, res);  
 });

@@ -1,10 +1,10 @@
 const User = require('../Models/User');
 const Security = require('../../../Utils/Security');
 
-function Login(request)
+function Login(request, response)
 {
     const User = require('../Models/User');
-    return User.findOne(  {email:request.body.email} )
+    User.findOne(  {email:request.body.email} )
     .then(user => 
         {
             if(user) //valid email
@@ -19,7 +19,39 @@ function Login(request)
             {
                 return null; 
             }
-        });        
+        }).
+        then(user => 
+          {
+            if (user)
+            {
+              request.session.isLoggedIn = true;
+              request.session.userId = user._id;
+              if(user.isAdmin)
+              {
+                request.session.mode = 'admin'
+              }
+              else
+              {
+                request.session.mode = 'user'
+              }
+              request.session.save((err)=>
+              {
+                if(request.session.mode == 'admin')
+                {
+                  response.redirect('/Admin/Products');
+                }
+                else
+                {
+                  response.redirect('/User/products');
+                }
+              });
+            }
+            else
+            {
+              response.redirect('/User')
+            }           
+          })
+        .catch(err=> console.log('login error',err));        
 }
 
 function SignUp(req, res)

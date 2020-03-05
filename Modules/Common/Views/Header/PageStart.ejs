@@ -55,13 +55,13 @@
                 <% } %> 
 
                <% if(!isLoggedIn) { %>
-                    <form class="form-inline ml-3 mr-1"  action="/Login" method="POST">
+                    <form class="form-inline ml-3 mr-1"  action="/Auth/Login" method="POST">
                         <input type="text" class="form-control mr-1" placeholder="Email" name="email">
                         <input type="password" class="form-control mr-1" placeholder="Password" name="password">
                         <input type="submit" class="btn btn-success" value="Login">
                     </form>
                 <% } else {%>
-                        <form class="form-inline ml-3 mr-1"  action="/Logout" method="GET">
+                        <form class="form-inline ml-3 mr-1"  action="/Auth/Logout" method="GET">
                             <input type="submit" class="btn btn-danger" value="Logout">
                         </form>
                 <% } %>
